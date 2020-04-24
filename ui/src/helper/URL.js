@@ -1,0 +1,1 @@
+export const apiUrlAdmin = "http://localhost:2020/admin"
