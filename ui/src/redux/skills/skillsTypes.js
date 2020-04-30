@@ -1,0 +1,19 @@
+//
+// computational skills types
+export const FETCH_CS_REQUEST = 'FETCH_CS_REQUEST'
+export const FETCH_CS_SUCCESS = 'FETCH_CS_SUCCESS'
+export const FETCH_CS_FAILED = 'FETCH_CS_FAILED'
+export const POST_CS_REQUEST = 'POST_CS_REQUEST'
+export const POST_CS_FAILED = 'POST_CS_FAILED'
+export const DELETE_CS_REQUEST = 'DELETE_CS_REQUEST'
+export const DELETE_CS_FAILED = 'DELETE_CS_FAILED'
+
+//
+// non-computational skills types
+export const FETCH_NCS_REQUEST = 'FETCH_NCS_REQUEST'
+export const FETCH_NCS_SUCCESS = 'FETCH_NCS_SUCCESS'
+export const FETCH_NCS_FAILED = 'FETCH_NCS_FAILED'
+export const POST_NCS_REQUEST = 'POST_NCS_REQUEST'
+export const POST_NCS_FAILED = 'POST_NCS_FAILED'
+export const DELETE_NCS_REQUEST = 'DELETE_NCS_REQUEST'
+export const DELETE_NCS_FAILED = 'DELETE_NCS_FAILED'

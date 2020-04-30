@@ -48,3 +48,8 @@
 .mt-3 {
   margin-top: 3vh;
 }
+
+.on-drag {
+  background-color: white;
+  justify-content: space-evenly;
+}

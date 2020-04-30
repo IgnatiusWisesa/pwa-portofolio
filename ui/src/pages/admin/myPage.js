@@ -1,13 +1,51 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchName, fetchOverview } from '../../redux'
+import {
+    fetchName,
+    fetchOverview,
+    updateName,
+    updateOverview,
+    fetchCs,
+    postCs,
+    deleteCs,
+    fetchNcs,
+    postNcs,
+    deleteNcs,
+    fetchEducation,
+    rearrangeEducationArray,
+    openAddEducation,
+    openUpdateEducation,
+    openDeleteEducation
+} from '../../redux'
+
+//
+// import react-beautiful-dnd
+import {
+    DragDropContext,
+    Droppable,
+    Draggable
+} from 'react-beautiful-dnd'
+
+//
+// import toast
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+//
+// config toast
+toast.configure({
+    draggable: false
+});
 
 function MyPage() {
-
+    
     //
     // selector name and overview
     const name = useSelector( state => state.nameOverview.user )
     const overview = useSelector( state => state.nameOverview.overview )
+    const compSkills = useSelector( state => state.skills.compSkills )
+    const nonCompSkills = useSelector ( state => state.skills.nonCompSkills )
+    const education = useSelector ( state => state.education.education_array )
 
     //
     // state name and overview
@@ -23,6 +61,9 @@ function MyPage() {
     useEffect(()=>{
         dispatch(fetchName())
         dispatch(fetchOverview())
+        dispatch(fetchCs())
+        dispatch(fetchNcs())
+        dispatch(fetchEducation())
     }, [dispatch]);
 
     return (
@@ -54,8 +95,18 @@ function MyPage() {
                                     <tbody>
                                         <tr className="highlight responsive-table center">
                                             <td>Full Name</td>
-                                            <td><input value={userName||name} onChange={(e)=>{setUserName(e.target.value)}} type="text" placeholder="Full Name" /></td>
-                                            <td><a href="#!" className="waves-effect waves-light btn">Save Change</a></td>
+                                            <td>
+                                                <div className="input-field col s10">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr className="no-border">
+                                                                <td><input value={userName||name} onChange={(e)=>{setUserName(e.target.value)}} type="text" placeholder="Full Name" /></td>
+                                                                <td><a href="#!" onClick={()=>dispatch(updateName(userName||name))} className="waves-effect waves-light btn">Save Change</a></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
                                         </tr>
                                         <tr className="no-border">
                                             <td>Overview</td>
@@ -65,7 +116,7 @@ function MyPage() {
                                                     <label htmlFor="textarea1">{userName||name}'s Overview</label>
                                                 </div>
                                             </td>
-                                            <td><a href="#!" className="waves-effect waves-light btn">Save Change</a></td>
+                                            <td><a href="#!" onClick={()=>dispatch(updateOverview(userOverview||overview))} className="waves-effect waves-light btn">Save Change</a></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -90,16 +141,28 @@ function MyPage() {
                         </tr>
                         <tr className="no-border">
                             <td>
-                                <div style={{border:'none'}} className="chips">
-                                    <div className="chip">
-                                        cek1
-                                        <i className="close material-icons">close</i>
-                                    </div>
-                                    <div className="chip">
-                                        cek1
-                                        <i className="close material-icons">close</i>
-                                    </div>
-                                    <input type="text" />
+                                <div className="no-border chips">
+                                    {
+                                        compSkills.map((val,index) => (
+                                            <div key={index} className="chip">
+                                                {val.skills}
+                                                <a href="#!" onClick={() => dispatch(deleteCs(val.id))}>
+                                                    <i style={{marginLeft: '2vh'}} className="fas fa-times" />
+                                                </a>
+                                            </div>
+                                        ))
+                                    }
+                                    <input 
+                                        onKeyPress={
+                                            (e) => {
+                                                if (e.key === 'Enter') {
+                                                    dispatch(postCs(e.target.value))
+                                                    e.target.value = ''
+                                                }
+                                            }
+                                        }
+                                        type="text" 
+                                    />
                                 </div>
                             </td>
                         </tr>
@@ -110,12 +173,28 @@ function MyPage() {
                         </tr>
                         <tr className="no-border">
                             <td>
-                                <div style={{border:'none'}} className="chips">
-                                    <div className="chip">
-                                        cek2
-                                        <i className="close material-icons">close</i>
-                                    </div>
-                                    <input type="text" />
+                                <div className="no-border chips">
+                                    {
+                                        nonCompSkills.map((val,index) => (
+                                            <div key={index} className="chip">
+                                                {val.skills}
+                                                <a href="#!" onClick={() => dispatch(deleteNcs(val.id))}>
+                                                    <i style={{marginLeft: '2vh'}} className="fas fa-times" />
+                                                </a>
+                                            </div>
+                                        ))
+                                    }
+                                    <input
+                                        onKeyPress={
+                                            (e) => {
+                                                if (e.key === 'Enter') {
+                                                    dispatch(postNcs(e.target.value))
+                                                    e.target.value = ''
+                                                }
+                                            }
+                                        }
+                                        type="text" 
+                                    />
                                 </div>
                             </td>
                         </tr>
@@ -133,33 +212,76 @@ function MyPage() {
                         </tr>
                         <tr className="no-border">
                             <td>
-                                <table className="highlight">
-                                    <thead>
-                                        <tr>
-                                            <td>Num.</td>
-                                            <td>Starts</td>
-                                            <td>Finish</td>
-                                            <td>Institution</td>
-                                            <td>Grade</td>
-                                            <td></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>2014</td>
-                                            <td>2018</td>
-                                            <td>Universitas Katolik Parahyangan</td>
-                                            <td>3.27</td>
-                                            <td>
-                                                <a href="#!" className="button-margin waves-effect waves-light btn">Edit</a>
-                                                <a href="#!" className="waves-effect waves-light btn">Delete</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <DragDropContext
+                                    onDragEnd={
+                                        (result) => {dispatch(rearrangeEducationArray(result,education))}
+                                    }
+                                >
+                                    <table className="highlight">
+                                        <thead>
+                                            <tr>
+                                                <td>Num.</td>
+                                                <td>Starts</td>
+                                                <td>Finish</td>
+                                                <td>Institution</td>
+                                                <td>Grade</td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                            <Droppable
+                                                droppableId="education"
+                                                key="education_droppable"
+                                            >
+                                                {
+                                                    ( provided )  => (
+                                                        <tbody
+                                                            ref = {provided.innerRef}
+                                                            {...provided.droppableProps}
+                                                        >
+                                                            {   
+                                                                <>
+                                                                    {education.map((val, index) => {
+                                                                        return(
+                                                                            <Draggable
+                                                                                draggableId={index.toString()}
+                                                                                index={index}
+                                                                                key={index}
+                                                                            >
+                                                                                {
+                                                                                    ( drag_provided ) => (
+                                                                                        <tr
+                                                                                            key={val.id}
+                                                                                            {...drag_provided.draggableProps}
+                                                                                            {...drag_provided.dragHandleProps}
+                                                                                            ref={drag_provided.innerRef}
+                                                                                            className="on-drag"
+                                                                                        >
+                                                                                            <td>{index+1}</td>
+                                                                                            <td>{val.starts}</td>
+                                                                                            <td>{val.finish}</td>
+                                                                                            <td>{val.institution}</td>
+                                                                                            <td>{val.grade}</td>
+                                                                                            <td>
+                                                                                                <a href="#!" onClick={() => dispatch(openUpdateEducation(index))} className="button-margin waves-effect waves-light btn">Edit</a>
+                                                                                                <a href="#!" onClick={() => dispatch(openDeleteEducation(index))} className="waves-effect waves-light btn">Delete</a>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    )
+                                                                                }
+                                                                            </Draggable>
+                                                                        )
+                                                                    })}
+                                                                    {provided.placeholder}
+                                                                </>
+                                                            }
+                                                        </tbody>
+                                                    )
+                                                }
+                                            </Droppable>
+                                    </table>
+                                </DragDropContext>
                                 <div className="center mt-3">
-                                    <a href="#!" className="waves-effect waves-light btn">Add</a>
+                                    <a onClick={()=>dispatch(openAddEducation())} href="#!" className="waves-effect waves-light btn">Add</a>
                                 </div>
                             </td>
                         </tr>

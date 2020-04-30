@@ -4,7 +4,10 @@ import {
     FETCH_NAME_FAILED,
     FETCH_OVERVIEW_REQUEST,
     FETCH_OVERVIEW_SUCCESS,
-    FETCH_OVERVIEW_FAILED
+    FETCH_OVERVIEW_FAILED,
+    UPDATE_NAME_REQUEST,
+    UPDATE_NAME_SUCCESS,
+    UPDATE_NAME_FAILED
 } from './name-overviewTypes'
 
 const initialState = {
@@ -28,6 +31,23 @@ const nameOverviewReducers = ( state=initialState, action ) => {
                 loading: false
             }
         case FETCH_NAME_FAILED:
+            return {
+                ...state,
+                message: action.payload,
+                loading: false
+            }
+        case UPDATE_NAME_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case UPDATE_NAME_SUCCESS:
+            return {
+                ...state,
+                user: action.payload,
+                loading: false
+            }
+        case UPDATE_NAME_FAILED:
             return {
                 ...state,
                 message: action.payload,
