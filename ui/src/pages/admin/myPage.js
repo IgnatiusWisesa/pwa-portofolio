@@ -15,7 +15,8 @@ import {
     rearrangeEducationArray,
     openAddEducation,
     openUpdateEducation,
-    openDeleteEducation
+    openDeleteEducation,
+    openAddWorkach
 } from '../../redux'
 
 //
@@ -214,7 +215,10 @@ function MyPage() {
                             <td>
                                 <DragDropContext
                                     onDragEnd={
-                                        (result) => {dispatch(rearrangeEducationArray(result,education))}
+                                        (result) => {
+                                            dispatch(rearrangeEducationArray(result,education))
+                                            console.log(result)
+                                        }
                                     }
                                 >
                                     <table className="highlight">
@@ -238,7 +242,7 @@ function MyPage() {
                                                             ref = {provided.innerRef}
                                                             {...provided.droppableProps}
                                                         >
-                                                            {   
+                                                            {   education?
                                                                 <>
                                                                     {education.map((val, index) => {
                                                                         return(
@@ -250,13 +254,13 @@ function MyPage() {
                                                                                 {
                                                                                     ( drag_provided ) => (
                                                                                         <tr
-                                                                                            key={val.id}
+                                                                                            key={index}
                                                                                             {...drag_provided.draggableProps}
                                                                                             {...drag_provided.dragHandleProps}
                                                                                             ref={drag_provided.innerRef}
                                                                                             className="on-drag"
                                                                                         >
-                                                                                            <td>{index+1}</td>
+                                                                                            <td>{val.id}</td>
                                                                                             <td>{val.starts}</td>
                                                                                             <td>{val.finish}</td>
                                                                                             <td>{val.institution}</td>
@@ -272,6 +276,14 @@ function MyPage() {
                                                                         )
                                                                     })}
                                                                     {provided.placeholder}
+                                                                </>
+                                                                :
+                                                                <>
+                                                                    <tr className="no-border">
+                                                                        <td className="center">
+                                                                            There is no data available yet
+                                                                        </td>
+                                                                    </tr>
                                                                 </>
                                                             }
                                                         </tbody>
@@ -289,12 +301,12 @@ function MyPage() {
                 </table>
                 {/* education ends */}
 
-                {/* achievement and organization starts */}
+                {/* work and achievement starts */}
                 <table>
                     <tbody>
                         <tr>
                             <td>
-                                <h4 className="left">Achievement and Organization</h4>
+                                <h4 className="left">Work and Achievement</h4>
                             </td>
                         </tr>
                         <tr className="no-border">
@@ -342,13 +354,13 @@ function MyPage() {
                                     </tbody>
                                 </table>
                                 <div className="center mt-3">
-                                    <a href="#!" className="waves-effect waves-light btn">Add</a>
+                                    <a onClick={() => dispatch(openAddWorkach())} href="#!" className="waves-effect waves-light btn">Add</a>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                {/* achievement and organization ends */}
+                {/* work and achievement ends */}
 
                 {/* organizational exp starts */}
                 <table>

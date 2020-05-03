@@ -248,12 +248,36 @@ export const deleteEducation = ( id ) => {
         ( dispacth ) => {
             dispacth(deleteEducationRequest())
             Axios.post(`${apiUrlAdmin}/delete-education`, {id})
-            .then(() => {
-                dispacth(fetchEducationRequest())
-                Axios.get(`${apiUrlAdmin}/get-education`)
-                .then((res) => {
-                    console.log(res.data)
-                    if (res.data.error) {
+            .then((res) => {
+                    let result = res.data.result
+                    let newEducationArray = []
+
+                    for (var i = 0; i< result.length; i++) {
+                        newEducationArray.push({
+                            ...result[i],
+                            id : -1
+                        })
+                    }
+
+                    if (res.data.error && res.data.message === "Data unavailable!") {
+                        toast.warn("data successfully deleted!", {
+                            autoClose: 1500
+                            });
+                        dispacth(closeDeleteEducation())
+                        dispacth(rearrangeEducationArrayRequest())
+                        Axios.put(`${apiUrlAdmin}/rearrange-education`, {newEducationArray})
+                        .then(() => {
+                            dispacth(fetchEducationRequest())
+                            Axios.get(`${apiUrlAdmin}/get-education`)
+                            .then((res) => {
+                                dispacth(fetchEducationSuccess(res.data.result))
+                            }).catch((err) => {
+                                dispacth(fetchEducationFailed(err.message))
+                            })
+                        }).catch((err) => {
+                            dispacth(rearrangeEducationArrayFailed(err.message))
+                        })
+                    } else if (res.data.error) {
                         toast.error("unsuccessful deletion!", {
                             autoClose: 1500
                             });
@@ -262,11 +286,20 @@ export const deleteEducation = ( id ) => {
                             autoClose: 1500
                             });
                         dispacth(closeDeleteEducation())
-                        dispacth(fetchEducationSuccess(res.data.result))
+                        dispacth(rearrangeEducationArrayRequest())
+                        Axios.put(`${apiUrlAdmin}/rearrange-education`, {newEducationArray})
+                        .then(() => {
+                            dispacth(fetchEducationRequest())
+                            Axios.get(`${apiUrlAdmin}/get-education`)
+                            .then((res) => {
+                                dispacth(fetchEducationSuccess(res.data.result))
+                            }).catch((err) => {
+                                dispacth(fetchEducationFailed(err.message))
+                            })
+                        }).catch((err) => {
+                            dispacth(rearrangeEducationArrayFailed(err.message))
+                        })
                     }
-                }).catch((err) => {
-                    dispacth(fetchEducationFailed(err.message))
-                })
             }).catch((err) => {
                 dispacth(deleteEducationFailed(err.message))
             })

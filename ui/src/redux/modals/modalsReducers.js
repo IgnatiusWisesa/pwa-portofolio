@@ -4,7 +4,9 @@ import {
     OPEN_UPDATE_EDUCATION,
     CLOSE_UPDATE_EDUCATION,
     OPEN_DELETE_EDUCATION,
-    CLOSE_DELETE_EDUCATION
+    CLOSE_DELETE_EDUCATION,
+    OPEN_ADD_WORKACH,
+    CLOSE_ADD_WORKACH
 } from './modalsTypes'
 
 const initialState = {
@@ -12,7 +14,8 @@ const initialState = {
     update_education: false,
     update_education_id: -1,
     delete_education: false,
-    delete_education_id: -1
+    delete_education_id: -1,
+    add_workach: false
 }
 
 const modalsReducers = ( state=initialState, action ) => {
@@ -48,6 +51,16 @@ const modalsReducers = ( state=initialState, action ) => {
             return {
                 ...state,
                 delete_education: false
+            }
+        case OPEN_ADD_WORKACH:
+            return {
+                ...state,
+                add_workach: true
+            }
+        case CLOSE_ADD_WORKACH:
+            return {
+                ...state,
+                add_workach: false
             }
 
         default: return state

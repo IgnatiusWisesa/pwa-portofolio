@@ -28,5 +28,7 @@ export {
     openUpdateEducation,
     closeUpdateEducation,
     openDeleteEducation,
-    closeDeleteEducation
+    closeDeleteEducation,
+    openAddWorkach,
+    closeAddWorkach
 } from './modals/modalsActions'

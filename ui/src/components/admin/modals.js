@@ -7,7 +7,8 @@ import {
     closeUpdateEducation,
     updateEducation,
     deleteEducation,
-    closeDeleteEducation
+    closeDeleteEducation,
+    closeAddWorkach
 } from '../../redux'
 
 //
@@ -31,7 +32,8 @@ function Modals() {
         update_education,
         update_education_id,
         delete_education,
-        delete_education_id
+        delete_education_id,
+        add_workach
     } = modals
 
     //
@@ -48,7 +50,7 @@ function Modals() {
     const [isUpdateEducationOpen = update_education] = useState()
     let showUpdateEducation = isUpdateEducationOpen? 'show-modal' : 'hidden-modal'
     const [isDeleteEducationOpen = delete_education] = useState()
-    const showDeleteEducation = isDeleteEducationOpen? 'show-modal' : 'hidden-modal'
+    let showDeleteEducation = isDeleteEducationOpen? 'show-modal' : 'hidden-modal'
     // add state
     const [addStartsNe, setAddStartsNe] = useState()
     const [addFinishNe, setAddFinishNe] = useState()
@@ -59,6 +61,16 @@ function Modals() {
     const [updateFinish, setUpdateFinish] = useState()
     const [updateInstitution, setUpdateInstitution] = useState()
     const [updateGrade, setUpdateGrade] = useState()
+
+    // work-ach state
+    // modal state
+    const [isAddWorkachOpen = add_workach] = useState()
+    let showAddWorkach = isAddWorkachOpen? 'show-modal' : 'hidden-modal'
+    // add state
+    const [addTitleNw, setAddTitleNw] = useState()
+    const [addInstitutionNw, setAddInstitutionNw] = useState()
+    const [addTimeNw, setAddTimeNw] = useState()
+    const [addOptionsNw, setAddOptionsNw] = useState()
 
     return (
         <div>
@@ -105,14 +117,28 @@ function Modals() {
                                     </tr>
                                     <tr className="no-border">
                                         <td className="center">
-                                            <a onClick={()=>dispatch(addEducation(
-                                                {
-                                                    starts: addStartsNe,
-                                                    finish: addFinishNe,
-                                                    institution: addInstitutionNe,
-                                                    grade: addGradeNe
-                                                }
-                                            ))} href="#!" className="button-margin waves-effect waves-light btn">Save</a>
+                                            {
+                                                education?
+                                                <a onClick={()=>dispatch(addEducation(
+                                                    {   
+                                                        id: education.length + 1,
+                                                        starts: addStartsNe || '',
+                                                        finish: addFinishNe || '',
+                                                        institution: addInstitutionNe || '',
+                                                        grade: addGradeNe || '-'
+                                                    }
+                                                ))} href="#!" className="button-margin waves-effect waves-light btn">Save</a>
+                                                :
+                                                <a onClick={()=>dispatch(addEducation(
+                                                    {   
+                                                        id: 1,
+                                                        starts: addStartsNe || '',
+                                                        finish: addFinishNe || '',
+                                                        institution: addInstitutionNe || '',
+                                                        grade: addGradeNe || '-'
+                                                    }
+                                                ))} href="#!" className="button-margin waves-effect waves-light btn">Save</a>
+                                            }
                                         </td>
                                     </tr>
                                 </thead>
@@ -217,6 +243,71 @@ function Modals() {
                                     <a href="#!" onClick={() => dispatch(deleteEducation(education[delete_education_id].id))} className="button-margin waves-effect waves-light btn">Delete</a>
                                     <a href="#!" onClick={() => dispatch(closeDeleteEducation())} className="waves-effect waves-light btn">Cancel</a>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                :
+                null
+            }
+            {
+                add_workach?
+                    <div id="myModal" className={showAddWorkach}>
+                        <div className="c-modal">
+                            <span onClick={()=>dispatch(closeAddWorkach())} className="modal-close">&times;</span>
+                            <div>
+                                <h4 className="center">Add Achievement and Organization</h4>
+                                <table className="highlight">
+                                    <thead>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input onChange={(e) => setAddTitleNw(e.target.value)} id="title" className="center validate" type="text" />
+                                                    <label htmlFor="title">Title</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input onChange={(e) => setAddInstitutionNw(e.target.value)} id="institution" className="center validate" type="text" />
+                                                    <label htmlFor="institution">Institution</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input onChange={(e) => setAddTimeNw(e.target.value)} id="time" className="center validate" type="text" />
+                                                    <label htmlFor="time">Time</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <label htmlFor="browser-default">Options</label>
+                                                <div className="input-field col s12">
+                                                    <select defaultValue="" onChange={(e) => setAddOptionsNw(e.target.value)} className="browser-default validate">
+                                                        <option value="" disabled>Choose your option</option>
+                                                        <option value="Skills Included">Skills Included</option>
+                                                        <option value="Key Responsibilities Included">Key Responsibilities Included</option>
+                                                        <option value="Description">Description</option>
+                                                        <option value="">None</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td className="center">
+                                                <a onClick={() => {
+                                                    console.log(addTitleNw)
+                                                    console.log(addInstitutionNw)
+                                                    console.log(addTimeNw)
+                                                    console.log(addOptionsNw)
+                                                }} href="#!" className="button-margin waves-effect waves-light btn">Save</a>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
                         </div>
                     </div>

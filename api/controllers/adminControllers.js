@@ -349,11 +349,12 @@ module.exports = {
             for(var i=0; i<newEducationArray.length; i++){
                 sql += `UPDATE education SET 
                         starts = '${newEducationArray[i].starts}', 
-                        finish = '${newEducationArray[i].starts}', 
+                        finish = '${newEducationArray[i].finish}', 
                         institution = '${newEducationArray[i].institution}', 
-                        grade = '${newEducationArray[i].grade}' 
-                        WHERE id = ${i+1};`
+                        grade = '${newEducationArray[i].grade}', 
+                        id = ${i+1};`
             }
+
             // Database Action
             db.query(sql, (err, rearrangeEducationResult) => {
                 if (err) return res.status(500).send(err);
@@ -463,7 +464,7 @@ module.exports = {
             // Database Action
             db.query(sql, [data, updatedEducation.id], (err, updateOverviewResult) => {
                 if (err) return res.status(500).send(err);
-    
+                
                 if (updateOverviewResult.affectedRows === 0) {
                     return res
                         .status(200)
@@ -496,7 +497,21 @@ module.exports = {
             if (result.affectedRows === 0) {
                 return res.status(200).send({ error: true, message: 'Deletion unsuccessful!' });
             } else {
-                return res.status(200).send({ error: false, message: 'Data deleted!' });
+
+                // Set SQL Syntax
+                // Get Education SQL
+                sql = `select * from education;`
+
+                // Database Action
+                db.query(sql, (err, result) => {
+                    if(err) res.status(200).send(err)
+
+                    if (result.length === 0) {
+                        return res.status(200).send({ error: true, message: 'Data unavailable!' });
+                    } else {
+                        return res.status(200).send({ error: false, result });
+                    }
+                })
             }
         });
     },
