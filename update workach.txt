@@ -1,4 +1,0 @@
-Update ulang
-- pas click update fetch data, simpen redux khusus buat update
-- onchange ganti global state redux update
-- onclick update baru ganti mysql
