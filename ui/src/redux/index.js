@@ -23,6 +23,14 @@ export {
 } from './education/educationActions'
 
 export {
+    fetchWorkach,
+    rearrangeWorkachArray,
+    addWorkach,
+    updateWorkach,
+    deleteWorkach
+} from './workach/workachActions'
+
+export {
     openAddEducation,
     closeAddEducation,
     openUpdateEducation,
@@ -30,5 +38,15 @@ export {
     openDeleteEducation,
     closeDeleteEducation,
     openAddWorkach,
-    closeAddWorkach
+    closeAddWorkach,
+    selectOptionsWorkach,
+    addOptionsWorkach,
+    deleteOptionsWorkach,
+    clickUpdateWorkach,
+    closeUpdateWorkach,
+    updateDescriptionWorkach,
+    addUpdateDescriptionWorkach,
+    deleteUpdateDescriptionWorkach,
+    openDeleteWorkach,
+    closeDeleteWorkach
 } from './modals/modalsActions'

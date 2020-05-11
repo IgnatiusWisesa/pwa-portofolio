@@ -122,7 +122,7 @@ export const rearrangeEducationArray = ( result, education ) => {
     }
     
     for(var k=0; k<newEducationArray.length; k++) {
-        newEducationArray[k] = {...newEducationArray[k], id: k+1}
+        newEducationArray[k] = {...newEducationArray[k], educationId: k+1}
     }
 
     return (
@@ -255,7 +255,7 @@ export const deleteEducation = ( id ) => {
                     for (var i = 0; i< result.length; i++) {
                         newEducationArray.push({
                             ...result[i],
-                            id : -1
+                            educationId : i+1
                         })
                     }
 

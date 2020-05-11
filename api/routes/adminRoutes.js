@@ -107,4 +107,46 @@ router.put("/update-education", adminControllers.updateeducation)
 */
 router.post("/delete-education", adminControllers.deleteeducation);
 
+/**
+* @routes GET
+* @description Fetch workach
+* @access Admin
+*/
+router.get("/get-workach", adminControllers.fetchworkach);
+
+/**
+* @routes PUT
+* @description Rearrange workach array 
+* @access Admin
+*/
+router.put("/rearrange-workach", adminControllers.rearrangeworkach);
+
+/**
+* @routes POST
+* @description Add workach 
+* @access Admin
+*/
+router.post("/add-workach", adminControllers.addworkach);
+
+/**
+* @routes POST
+* @description Fetch workach for update
+* @access Admin
+*/
+router.post("/get-workach-update", adminControllers.fetchupdateworkach);
+
+/**
+* @routes PUT
+* @description Update workach
+* @access Admin
+*/
+router.put("/update-workach", adminControllers.updateworkach);
+
+/**
+* @routes POST
+* @description Delete workach
+* @access Admin
+*/
+router.post("/delete-workach", adminControllers.deleteworkach);
+
 module.exports = router;

@@ -16,7 +16,11 @@ import {
     openAddEducation,
     openUpdateEducation,
     openDeleteEducation,
-    openAddWorkach
+    openAddWorkach,
+    fetchWorkach,
+    rearrangeWorkachArray,
+    clickUpdateWorkach,
+    openDeleteWorkach
 } from '../../redux'
 
 //
@@ -47,6 +51,7 @@ function MyPage() {
     const compSkills = useSelector( state => state.skills.compSkills )
     const nonCompSkills = useSelector ( state => state.skills.nonCompSkills )
     const education = useSelector ( state => state.education.education_array )
+    const workach = useSelector( state => state.workach.workach_array )
 
     //
     // state name and overview
@@ -65,6 +70,7 @@ function MyPage() {
         dispatch(fetchCs())
         dispatch(fetchNcs())
         dispatch(fetchEducation())
+        dispatch(fetchWorkach())
     }, [dispatch]);
 
     return (
@@ -217,7 +223,6 @@ function MyPage() {
                                     onDragEnd={
                                         (result) => {
                                             dispatch(rearrangeEducationArray(result,education))
-                                            console.log(result)
                                         }
                                     }
                                 >
@@ -260,14 +265,14 @@ function MyPage() {
                                                                                             ref={drag_provided.innerRef}
                                                                                             className="on-drag"
                                                                                         >
-                                                                                            <td>{val.id}</td>
+                                                                                            <td>{val.educationId}</td>
                                                                                             <td>{val.starts}</td>
                                                                                             <td>{val.finish}</td>
                                                                                             <td>{val.institution}</td>
                                                                                             <td>{val.grade}</td>
                                                                                             <td>
                                                                                                 <a href="#!" onClick={() => dispatch(openUpdateEducation(index))} className="button-margin waves-effect waves-light btn">Edit</a>
-                                                                                                <a href="#!" onClick={() => dispatch(openDeleteEducation(index))} className="waves-effect waves-light btn">Delete</a>
+                                                                                                <a href="#!" onClick={() => dispatch(openDeleteEducation(val.educationId))} className="waves-effect waves-light btn">Delete</a>
                                                                                             </td>
                                                                                         </tr>
                                                                                     )
@@ -311,51 +316,118 @@ function MyPage() {
                         </tr>
                         <tr className="no-border">
                             <td>
-                                <table className="highlight">
-                                    <thead>
-                                        <tr>
-                                            <td>Num.</td>
-                                            <td>Title</td>
-                                            <td>Institution</td>
-                                            <td>Time</td>
-                                            <td>Option</td>
-                                            <td>Description</td>
-                                            <td></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Coding Student</td>
-                                            <td>Purwadhika</td>
-                                            <td>2019 - now</td>
-                                            <td>Skills Included</td>
-                                            <td>
-                                                <table className="highlight">
-                                                    <tbody>
-                                                        <tr className="no-border">
-                                                            <td>
-                                                                ReactJS
-                                                            </td>
-                                                        </tr>
-                                                        <tr className="no-border">
-                                                            <td>
-                                                                HTML
-                                                            </td>
-                                                        </tr>
+                                <DragDropContext
+                                    onDragEnd={
+                                        (result) => {
+                                            dispatch(rearrangeWorkachArray(result,workach))
+                                        }
+                                    }
+                                >
+                                    <table className="highlight">
+                                        <thead>
+                                            <tr>
+                                                <td>Num.</td>
+                                                <td>Title</td>
+                                                <td>Institution</td>
+                                                <td>Time</td>
+                                                <td>Option</td>
+                                                <td>Description</td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <Droppable
+                                            droppableId="workach"
+                                            key="workach_droppable"
+                                        >
+                                            {
+                                                ( provided ) => (
+                                                    <tbody
+                                                        ref = {provided.innerRef}
+                                                        {...provided.droppableProps}
+                                                    >
+                                                        {
+                                                            workach?
+                                                            <>
+                                                                {
+                                                                    workach.map((val,index) => {
+                                                                        return (
+                                                                            <Draggable
+                                                                                draggableId={index.toString()}
+                                                                                index={index}
+                                                                                key={index}
+                                                                            >
+                                                                                {
+                                                                                    ( drag_provided ) => (
+                                                                                        <tr
+                                                                                            key={index}
+                                                                                            {...drag_provided.draggableProps}
+                                                                                            {...drag_provided.dragHandleProps}
+                                                                                            ref={drag_provided.innerRef}
+                                                                                            className="on-drag"
+                                                                                        >
+                                                                                            <td>{val.workachId}</td>
+                                                                                            <td>{val.title}</td>
+                                                                                            <td>{val.institution}</td>
+                                                                                            <td>{val.time}</td>
+                                                                                            <td>{val.opt}</td>
+                                                                                            <td>
+                                                                                                <table className="highlight">
+                                                                                                    <tbody>
+                                                                                                        {
+                                                                                                            workach[index].description?
+                                                                                                                workach[index].description.map((val,index) => {
+                                                                                                                    return (
+                                                                                                                        <tr
+                                                                                                                            key={index}
+                                                                                                                            className="no-border"
+                                                                                                                        >
+                                                                                                                            <td>
+                                                                                                                                {val}
+                                                                                                                            </td>
+                                                                                                                        </tr>
+                                                                                                                    )
+                                                                                                                })
+                                                                                                            :
+                                                                                                            <tr className="no-border">
+                                                                                                                <td>
+                                                                                                                    -
+                                                                                                                </td>
+                                                                                                            </tr>
+                                                                                                        }
+                                                                                                    </tbody>
+                                                                                                </table>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <a href="#!" onClick={() => dispatch(clickUpdateWorkach(val.id))} className="button-margin waves-effect waves-light btn">Edit</a>
+                                                                                                <a href="#!" onClick={() => dispatch(openDeleteWorkach(val.workachId))} className="waves-effect waves-light btn">Delete</a>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    )
+                                                                                }
+                                                                            </Draggable>
+                                                                        )
+                                                                    })
+                                                                }
+                                                                {provided.placeholder}
+                                                            </>
+                                                            :
+                                                            <>
+                                                                <tr className="no-border">
+                                                                    <td className="center">
+                                                                        There is no data available yet
+                                                                    </td>
+                                                                </tr>
+                                                            </>
+                                                        }
                                                     </tbody>
-                                                </table>
-                                            </td>
-                                            <td>
-                                                <a href="#!" className="button-margin waves-effect waves-light btn">Edit</a>
-                                                <a href="#!" className="waves-effect waves-light btn">Delete</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div className="center mt-3">
-                                    <a onClick={() => dispatch(openAddWorkach())} href="#!" className="waves-effect waves-light btn">Add</a>
-                                </div>
+                                                )
+                                            }
+                                        </Droppable>
+                                    </table>
+                                    <div className="center mt-3">
+                                        <a onClick={() => dispatch(openAddWorkach())} href="#!" className="waves-effect waves-light btn">Add</a>
+                                    </div>
+                                </DragDropContext>
                             </td>
                         </tr>
                     </tbody>

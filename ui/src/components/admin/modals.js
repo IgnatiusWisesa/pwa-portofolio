@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './modals.css'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -8,7 +8,18 @@ import {
     updateEducation,
     deleteEducation,
     closeDeleteEducation,
-    closeAddWorkach
+    closeAddWorkach,
+    selectOptionsWorkach,
+    addOptionsWorkach,
+    deleteOptionsWorkach,
+    addWorkach,
+    closeUpdateWorkach,
+    updateDescriptionWorkach,
+    addUpdateDescriptionWorkach,
+    deleteUpdateDescriptionWorkach,
+    updateWorkach,
+    closeDeleteWorkach,
+    deleteWorkach
 } from '../../redux'
 
 //
@@ -26,14 +37,21 @@ function Modals() {
     //
     // selector
     const education = useSelector( state => state.education.education_array )
+    const workach = useSelector( state => state.workach.workach_array )
     const modals = useSelector( state => state.modals )
+    const workach_update_array = useSelector( state => state.modals.workach_update_array )
+    const workach_update_description = useSelector( state => state.modals.workach_update_description )
     const {
         add_education,
         update_education,
         update_education_id,
         delete_education,
         delete_education_id,
-        add_workach
+        add_workach,
+        select_options_workach,
+        array_options_workach,
+        delete_workach,
+        delete_workach_id
     } = modals
 
     //
@@ -61,19 +79,45 @@ function Modals() {
     const [updateFinish, setUpdateFinish] = useState()
     const [updateInstitution, setUpdateInstitution] = useState()
     const [updateGrade, setUpdateGrade] = useState()
+    // delete state
+    const delete_education_obj = education.filter((val) => delete_education_id === val.educationId)[0]
 
     // work-ach state
     // modal state
     const [isAddWorkachOpen = add_workach] = useState()
     let showAddWorkach = isAddWorkachOpen? 'show-modal' : 'hidden-modal'
+    const [isUpdateWorkachOpen = workach_update_array.length] = useState()
+    let showUpdateWorkach = isUpdateWorkachOpen? 'show-modal' : 'hidden-modal'
+    const [isDeleteWorkachOpen = delete_workach] = useState()
+    let showDeleteWorkach = isDeleteWorkachOpen? 'show-modal' : 'hidden-modal'
     // add state
     const [addTitleNw, setAddTitleNw] = useState()
     const [addInstitutionNw, setAddInstitutionNw] = useState()
     const [addTimeNw, setAddTimeNw] = useState()
     const [addOptionsNw, setAddOptionsNw] = useState()
+    const [addFillOptionsNw, setAddFillOptionsNw] = useState([])
+    // update state
+    const [updateTitleW, setUpdateTitleW] = useState()
+    const [updateInstitutionW, setUpdateInstitutionW] = useState()
+    const [updateTimeW, setUpdateTimeW] = useState()
+    const [updateOptionsW, setUpdateOptionsW] = useState()
+    let [updateDescription, setUpdateDescription] = useState([])
+    // update description use effect
+    useEffect(() => {
+        if(workach_update_description.length){
+            setUpdateDescription(workach_update_description)
+        } else if(workach_update_array.length){
+            setUpdateDescription(workach_update_array[0].description)
+        } else {
+            setUpdateDescription([])
+        }
+    }, [workach_update_array, workach_update_description])
+    // delete state
+    const delete_workach_obj = workach.filter((val) => delete_workach_id === val.workachId)[0]
 
     return (
         <div>
+{/* ================================================================================================================ add education modal starts */}
             {
                 add_education?
                 <div id="myModal" className={showAddEducation}>
@@ -121,7 +165,7 @@ function Modals() {
                                                 education?
                                                 <a onClick={()=>dispatch(addEducation(
                                                     {   
-                                                        id: education.length + 1,
+                                                        educationId: education.length + 1,
                                                         starts: addStartsNe || '',
                                                         finish: addFinishNe || '',
                                                         institution: addInstitutionNe || '',
@@ -132,6 +176,7 @@ function Modals() {
                                                 <a onClick={()=>dispatch(addEducation(
                                                     {   
                                                         id: 1,
+                                                        educationId: 1,
                                                         starts: addStartsNe || '',
                                                         finish: addFinishNe || '',
                                                         institution: addInstitutionNe || '',
@@ -149,6 +194,8 @@ function Modals() {
                 :
                 null
             }
+{/* ================================================================================================================ add education modal ends */}
+{/* ================================================================================================================ update education modal starts */}
             {   
                 update_education?
                     <div id="myModal" className={showUpdateEducation}>
@@ -162,7 +209,7 @@ function Modals() {
                                         <tr className="no-border">
                                             <td>
                                                 <div className="input-field">
-                                                    <input id="starts" onChange={(e) => setUpdateStarts(e.target.value)} value={updateStarts||education[update_education_id].starts} className="center validate" type="text" />
+                                                    <input id="starts" onChange={(e) => setUpdateStarts(e.target.value)} defaultValue={education[update_education_id].starts} className="center validate" type="text" />
                                                     <label htmlFor="starts">Education Starts</label>
                                                 </div>
                                             </td>
@@ -170,7 +217,7 @@ function Modals() {
                                         <tr className="no-border">
                                             <td>
                                                 <div className="input-field">
-                                                    <input id="finish" onChange={(e) => setUpdateFinish(e.target.value)} value={updateFinish||education[update_education_id].finish} className="center validate" type="text" />
+                                                    <input id="finish" onChange={(e) => setUpdateFinish(e.target.value)} defaultValue={education[update_education_id].finish} className="center validate" type="text" />
                                                     <label htmlFor="finish">Education Finish</label>
                                                 </div>
                                             </td>
@@ -178,7 +225,7 @@ function Modals() {
                                         <tr className="no-border">
                                             <td>
                                                 <div className="input-field">
-                                                    <input id="institution" onChange={(e) => setUpdateInstitution(e.target.value)} value={updateInstitution||education[update_education_id].institution} className="center validate" type="text" />
+                                                    <input id="institution" onChange={(e) => setUpdateInstitution(e.target.value)} defaultValue={education[update_education_id].institution} className="center validate" type="text" />
                                                     <label htmlFor="institution">Institution</label>
                                                 </div>
                                             </td>
@@ -186,7 +233,7 @@ function Modals() {
                                         <tr className="no-border">
                                             <td>
                                                 <div className="input-field">
-                                                    <input id="grade" onChange={(e) => setUpdateGrade(e.target.value)} value={updateGrade||education[update_education_id].grade} className="center validate" type="text" />
+                                                    <input id="grade" onChange={(e) => setUpdateGrade(e.target.value)} defaultValue={education[update_education_id].grade} className="center validate" type="text" />
                                                     <label htmlFor="grade">Grade</label>
                                                 </div>
                                             </td>
@@ -212,6 +259,8 @@ function Modals() {
                 :
                 null
             }
+{/* ================================================================================================================ update education modal ends */}
+{/* ================================================================================================================ delete education modal starts */}
             {
                 delete_education?
                     <div id="myModal" className={showDeleteEducation}>
@@ -231,16 +280,16 @@ function Modals() {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>{education[delete_education_id].starts}</td>
-                                            <td>{education[delete_education_id].finish}</td>
-                                            <td>{education[delete_education_id].institution}</td>
-                                            <td>{education[delete_education_id].grade}</td>
+                                            <td>{delete_education_obj.starts}</td>
+                                            <td>{delete_education_obj.finish}</td>
+                                            <td>{delete_education_obj.institution}</td>
+                                            <td>{delete_education_obj.grade}</td>
                                             <td></td>
                                         </tr>
                                     </tbody>
                                 </table>
                                 <div className="mt-3">
-                                    <a href="#!" onClick={() => dispatch(deleteEducation(education[delete_education_id].id))} className="button-margin waves-effect waves-light btn">Delete</a>
+                                    <a href="#!" onClick={() => dispatch(deleteEducation(delete_education_obj.educationId))} className="button-margin waves-effect waves-light btn">Delete</a>
                                     <a href="#!" onClick={() => dispatch(closeDeleteEducation())} className="waves-effect waves-light btn">Cancel</a>
                                 </div>
                             </div>
@@ -249,13 +298,24 @@ function Modals() {
                 :
                 null
             }
+{/* ================================================================================================================ delete education modal ends */}
+{/* ================================================================================================================ add workach modal starts */}
             {
                 add_workach?
                     <div id="myModal" className={showAddWorkach}>
                         <div className="c-modal">
-                            <span onClick={()=>dispatch(closeAddWorkach())} className="modal-close">&times;</span>
+                            <span 
+                                onClick={
+                                    ()=>dispatch(closeAddWorkach(),
+                                        setAddFillOptionsNw([])
+                                    )
+                                } 
+                                className="modal-close"
+                            >
+                                &times;
+                            </span>
                             <div>
-                                <h4 className="center">Add Achievement and Organization</h4>
+                                <h4 className="center">Add Work and Achievement</h4>
                                 <table className="highlight">
                                     <thead>
                                         <tr className="no-border">
@@ -286,7 +346,15 @@ function Modals() {
                                             <td>
                                                 <label htmlFor="browser-default">Options</label>
                                                 <div className="input-field col s12">
-                                                    <select defaultValue="" onChange={(e) => setAddOptionsNw(e.target.value)} className="browser-default validate">
+                                                    <select 
+                                                        defaultValue="" 
+                                                        onChange={
+                                                            (e) => dispatch(selectOptionsWorkach(e.target.value),
+                                                            setAddOptionsNw(e.target.value)
+                                                            )
+                                                        }
+                                                        className="browser-default validate"
+                                                    >
                                                         <option value="" disabled>Choose your option</option>
                                                         <option value="Skills Included">Skills Included</option>
                                                         <option value="Key Responsibilities Included">Key Responsibilities Included</option>
@@ -296,14 +364,98 @@ function Modals() {
                                                 </div>
                                             </td>
                                         </tr>
+                                        {
+                                            select_options_workach?
+                                                array_options_workach.map((val,index) => {
+                                                    return(
+                                                        <tr className="no-border" key={index}>
+                                                            <td>
+                                                                <div className="inputWithIcon inputIconBg row">
+                                                                    <div className="col s12">
+                                                                        <textarea
+                                                                            onChange={
+                                                                                (e) => setAddFillOptionsNw(
+                                                                                    addFillOptionsNw.concat(
+                                                                                        {
+                                                                                            index,
+                                                                                            timestamp: Date.now(),
+                                                                                            value: e.target.value
+                                                                                        }
+                                                                                    )
+                                                                                )
+                                                                            }
+                                                                            placeholder={addOptionsNw.split(' ')[0] + ' '+ parseInt(index+1)} 
+                                                                            className="materialize-textarea"
+                                                                        >
+                                                                        </textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            :
+                                            null
+                                        }
+                                        {
+                                            select_options_workach?
+                                                <tr className="no-border">
+                                                    <td>
+                                                        <div className="row mb-3">
+                                                            <div className="col s5"></div>
+                                                            <div
+                                                                onClick={
+                                                                    ()=>dispatch(addOptionsWorkach())}
+                                                                className="col s1 color-add-icon"
+                                                            >
+                                                                <i className="fas fa-plus-circle fa-2x" />
+                                                            </div>
+                                                            <div 
+                                                                onClick={()=>dispatch(deleteOptionsWorkach())}
+                                                                className="col s6 delete-modal-icon"
+                                                            >
+                                                                <i className="fa fa-minus-circle fa-2x" aria-hidden="true" />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            :
+                                            null
+                                        }
                                         <tr className="no-border">
                                             <td className="center">
-                                                <a onClick={() => {
-                                                    console.log(addTitleNw)
-                                                    console.log(addInstitutionNw)
-                                                    console.log(addTimeNw)
-                                                    console.log(addOptionsNw)
-                                                }} href="#!" className="button-margin waves-effect waves-light btn">Save</a>
+                                                {
+                                                    workach?
+                                                        <a onClick={() => { dispatch(addWorkach(
+                                                            {
+                                                                newWorkach: {
+                                                                    title: addTitleNw || '',
+                                                                    institution: addInstitutionNw || '',
+                                                                    time: addTimeNw || '',
+                                                                    opt: addOptionsNw || '',
+                                                                    description: addFillOptionsNw || '',
+                                                                    length: Math.max(...addFillOptionsNw.map((val) => val.index))+1,
+                                                                    workachId: workach.length + 1,
+                                                                    id: workach.length+1
+                                                                }
+                                                            }),
+                                                            setAddFillOptionsNw([])
+                                                        )}} href="#!" className="ml-2 button-margin waves-effect waves-light btn">Save</a>
+                                                        :
+                                                            <a onClick={() => { dispatch(addWorkach(
+                                                                {
+                                                                    title: addTitleNw || '',
+                                                                    institution: addInstitutionNw || '',
+                                                                    time: addTimeNw || '',
+                                                                    opt: addOptionsNw || '',
+                                                                    description: addFillOptionsNw || '',
+                                                                    length: Math.max(...addFillOptionsNw.map((val) => val.index))+1,
+                                                                    workachId: 1,
+                                                                    id: 1
+                                                                }),
+                                                                setAddFillOptionsNw([])
+                                                            )}} href="#!" className="ml-2 button-margin waves-effect waves-light btn">Save</a>
+                                                }
                                             </td>
                                         </tr>
                                     </thead>
@@ -314,7 +466,257 @@ function Modals() {
                 :
                 null
             }
-
+{/* ================================================================================================================ add workach modal ends */}
+{/* ================================================================================================================ update workach modal starts */}
+            {
+                workach_update_array.length?
+                    <div id="myModal" className={showUpdateWorkach}>
+                        <div className="c-modal">
+                            <span onClick={()=>dispatch(closeUpdateWorkach())} className="modal-close">&times;</span>
+                            <div>
+                                <h4 className="center">Update Workach</h4>
+                                <h5>ID: {workach_update_array[0].id}</h5>
+                                <table className="highlight">
+                                    <thead>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input
+                                                        id="title"
+                                                        onChange={
+                                                            (e) => {
+                                                                setUpdateTitleW(e.target.value)
+                                                            }
+                                                        }
+                                                        defaultValue={workach_update_array[0].title}
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="title">Title</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input 
+                                                        id="institution" 
+                                                        onChange={
+                                                            (e) => {
+                                                                setUpdateInstitutionW(e.target.value)
+                                                            }
+                                                        }
+                                                        defaultValue={workach_update_array[0].institution}
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="institution">Institution</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input 
+                                                        id="time" 
+                                                        onChange={
+                                                            (e) => {
+                                                                setUpdateTimeW(e.target.value)
+                                                            }
+                                                        }
+                                                        defaultValue={workach_update_array[0].time}
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="time">Time</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <label htmlFor="browser-default">Options</label>
+                                                <div className="input-field col s12">
+                                                    <select
+                                                        onChange= {
+                                                            (e) => {
+                                                                setUpdateOptionsW(e.target.value)
+                                                            }
+                                                        }
+                                                        value= {updateOptionsW}
+                                                        defaultValue= {workach_update_array[0].opt}
+                                                        className="browser-default validate"
+                                                    >
+                                                        <option value="Skills Included">Skills Included</option>
+                                                        <option value="Key Responsibilities Included">Key Responsibilities Included</option>
+                                                        <option value="Description">Description</option>
+                                                        <option value="-">None</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {   
+                                            updateOptionsW !== '-' ?
+                                                updateDescription.map((val,index) => {
+                                                    if (updateOptionsW === undefined || updateOptionsW === null) {
+                                                        return (
+                                                            <tr className="no-border" key={index}>
+                                                                <td>
+                                                                    <div className="inputWithIcon inputIconBg row">
+                                                                        <div className="col s12">
+                                                                            <textarea
+                                                                                onChange={(e) => {
+                                                                                    dispatch(updateDescriptionWorkach(
+                                                                                        e.target.value, index, updateDescription
+                                                                                    ))
+                                                                                }}
+                                                                                defaultValue={val}
+                                                                                placeholder={
+                                                                                    workach_update_array[0].opt.split(' ')[0] + ' '+ parseInt(index+1)
+                                                                                }
+                                                                                className="materialize-textarea"
+                                                                            >
+                                                                            </textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    } 
+                                                    else {
+                                                        return (
+                                                            <tr className="no-border" key={index}>
+                                                                <td>
+                                                                    <div className="inputWithIcon inputIconBg row">
+                                                                        <div className="col s12">
+                                                                            <textarea
+                                                                                onChange={(e) => {
+                                                                                    dispatch(updateDescriptionWorkach(
+                                                                                        e.target.value, index, updateDescription
+                                                                                    ))
+                                                                                }}
+                                                                                defaultValue={val}
+                                                                                placeholder={
+                                                                                    updateOptionsW.split(' ')[0] + ' '+ parseInt(index+1)
+                                                                                }
+                                                                                className="materialize-textarea"
+                                                                            >
+                                                                            </textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                })
+                                            : 
+                                            null
+                                        }
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="row mb-3">
+                                                    <div className="col s5"></div>
+                                                    <div
+                                                        onClick={() => {
+                                                            dispatch(addUpdateDescriptionWorkach( updateDescription ))
+                                                        }}
+                                                        className="col s1 color-add-icon"
+                                                    >
+                                                        <i className="fas fa-plus-circle fa-2x" />
+                                                    </div>
+                                                    <div 
+                                                        onClick={() => {
+                                                            dispatch(deleteUpdateDescriptionWorkach( updateDescription ))
+                                                        }}
+                                                        className="col s6 delete-modal-icon"
+                                                    >
+                                                        <i className="fa fa-minus-circle fa-2x" aria-hidden="true" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td className="center">
+                                                <a 
+                                                    onClick={
+                                                        () => {
+                                                            dispatch(updateWorkach({
+                                                                updatedWorkach: {
+                                                                    id: workach_update_array[0].id,
+                                                                    workachId: workach_update_array[0].workachId,
+                                                                    title: updateTitleW || workach_update_array[0].title,
+                                                                    institution: updateInstitutionW || workach_update_array[0].institution,
+                                                                    time: updateTimeW || workach_update_array[0].time,
+                                                                    opt: updateOptionsW || workach_update_array[0].opt,
+                                                                    description: workach_update_description || workach_update_array[0].description
+                                                                }
+                                                            }))
+                                                        }
+                                                    }
+                                                    href="#!" 
+                                                    className="ml-2 button-margin waves-effect waves-light btn"
+                                                >Update</a>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                :
+                null
+            }
+{/* ================================================================================================================ update workach modal ends */}
+{/* ================================================================================================================ delete workach modal starts */}
+            {
+                delete_workach?
+                    <div id="myModal" className={showDeleteWorkach}>
+                        <div className="c-modal">
+                            <span onClick={()=>dispatch(closeDeleteWorkach())} className="modal-close">&times;</span>
+                            <div>
+                                <h5>Are you sure want to delete this?</h5>
+                                <table className="highlight">
+                                    <thead>
+                                        <tr>
+                                            <td>Title</td>
+                                            <td>Institution</td>
+                                            <td>Time</td>
+                                            <td>Option</td>
+                                            <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{delete_workach_obj.title}</td>
+                                            <td>{delete_workach_obj.institution}</td>
+                                            <td>{delete_workach_obj.time}</td>
+                                            <td>{delete_workach_obj.opt}</td>
+                                            <td>
+                                                <table>
+                                                    <tbody>
+                                                        {delete_workach_obj.description.map((val, index) => {
+                                                            return (
+                                                                <tr key={index} className="no-border">
+                                                                    <td>{val}</td>
+                                                                </tr>
+                                                            )
+                                                        })}
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div className="mt-3">
+                                    <a href="#!" onClick={() => dispatch(deleteWorkach(delete_workach_obj.workachId))} className="button-margin waves-effect waves-light btn">Delete</a>
+                                    <a href="#!" onClick={() => dispatch(closeDeleteWorkach())} className="waves-effect waves-light btn">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                :
+                null
+            }
+{/* ================================================================================================================ delete workach modal ends */}
         </div>
     )
 }

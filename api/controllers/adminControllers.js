@@ -313,7 +313,7 @@ module.exports = {
    fetcheducation : (req,res) => {
         // Set SQL Syntax
         // Get Education SQL
-        let sql = `select * from education;`
+        let sql = `select * from education ORDER BY educationId;`
 
         // Database Action
         db.query(sql, (err, result) => {
@@ -352,7 +352,8 @@ module.exports = {
                         finish = '${newEducationArray[i].finish}', 
                         institution = '${newEducationArray[i].institution}', 
                         grade = '${newEducationArray[i].grade}', 
-                        id = ${i+1};`
+                        educationId = '${i+1}' 
+                        WHERE id = ${newEducationArray[i].id};`
             }
 
             // Database Action
@@ -378,7 +379,7 @@ module.exports = {
     * @access Admin
     */
     addeducation : (req,res) => {
-        // Get Skill
+        // Get new education
         const newEducation = req.body
 
         // Validation Data
@@ -477,6 +478,7 @@ module.exports = {
             })
         }
     },
+
     /**
     * @routes POST
     * @description Delete education
@@ -488,7 +490,7 @@ module.exports = {
 
         // Set SQL Syntax
         // Delete Comp-Skill SQL
-        let sql = `DELETE FROM education WHERE (id = ? )`;
+        let sql = `DELETE FROM education WHERE (educationId = ? )`;
 
         // Database Action
         db.query(sql, parseInt(id), (err, result) => {
@@ -501,6 +503,332 @@ module.exports = {
                 // Set SQL Syntax
                 // Get Education SQL
                 sql = `select * from education;`
+
+                // Database Action
+                db.query(sql, (err, result) => {
+                    if(err) res.status(200).send(err)
+
+                    if (result.length === 0) {
+                        return res.status(200).send({ error: true, message: 'Data unavailable!' });
+                    } else {
+                        return res.status(200).send({ error: false, result });
+                    }
+                })
+            }
+        });
+    },
+
+    /**
+    * @routes GET
+    * @description Fetch workach
+    * @access Admin
+    */
+    fetchworkach : (req,res) => {
+        // Set SQL Syntax
+        // Get Workach SQL
+        let sql = `select * from workach ORDER BY workachId;`
+
+        // Database Action
+        db.query(sql, (err, result) => {
+            if(err) res.status(200).send(err)
+
+            if (result.length === 0) {
+                return res.status(200).send({ error: true, message: 'Data unavailable!' });
+            } else {
+                //
+                // Set Result
+                let resultSuccess = []
+
+                for (var i=0; i<result.length;i++) {
+                    resultSuccess.push(
+                        {
+                            id : result[i].id,
+                            workachId : result[i].workachId,
+                            title : result[i].title,
+                            institution : result[i].institution,
+                            time : result[i].time,
+                            opt : result[i].opt,
+                            description : JSON.parse(result[i].description)
+                        }
+                    )
+                }
+
+                return res.status(200).send({ error: false, resultSuccess });
+            }
+        })
+    },
+
+    /**
+    * @routes PUT
+    * @description Rearrange workach array 
+    * @access Admin
+    */
+    rearrangeworkach : (req,res) => {
+        // Get workach array
+        const {newWorkachArray} = req.body
+
+        //
+        // Stringify description
+        for (var i = 0; i<newWorkachArray.length; i++) {
+            
+            //
+            // Validify option
+            if (newWorkachArray[i].opt === false){
+                newWorkachArray[i] = {
+                    ...newWorkachArray[i],
+                    opt: '-'
+                }
+            }
+
+            //
+            // Validify description
+            if (newWorkachArray[i].description){
+                newWorkachArray[i] = {
+                    ...newWorkachArray[i],
+                    description: JSON.stringify(newWorkachArray[i].description)
+                }
+            } else {
+                newWorkachArray[i] = {
+                    ...newWorkachArray[i],
+                    description: '["-"]'
+                }
+            }
+        }
+
+        // Validation Data
+        if(
+            newWorkachArray === '' || newWorkachArray === undefined
+        ){
+            return res.status(500).send({ error: true, message: `There is an error with the dnd!` })
+        } else {
+            // Set SQL Syntax
+            // Rearrange Workach SQL
+            let sql = ``;
+            for(var i=0; i<newWorkachArray.length; i++){
+                sql += `UPDATE workach SET 
+                        title = '${newWorkachArray[i].title}', 
+                        institution = '${newWorkachArray[i].institution}', 
+                        time = '${newWorkachArray[i].time}', 
+                        opt = '${newWorkachArray[i].opt}',
+                        description = '${newWorkachArray[i].description}', 
+                        workachId = '${i+1}'
+                        WHERE id = ${newWorkachArray[i].id};`
+            }
+
+            // Database Action
+            db.query(sql, (err, rearrangeWorkachResult) => {
+                if (err) return res.status(500).send(err);
+
+                if (rearrangeWorkachResult.affectedRows === 0) {
+                    return res
+                        .status(200)
+                        .send({ error: true, message: "Failed to rearrange workach!" })
+                } else {
+                    return res
+                        .status(200)
+                        .send({ error: false, message: "Rearrange workach successfull!" })
+                }
+            })
+        }
+    },
+
+    /**
+    * @routes POST
+    * @description Add workach 
+    * @access Admin
+    */
+    addworkach : (req,res) => {
+        // Get new workach
+        const { newWorkach } = req.body
+
+        // Validation Data
+        if(
+            newWorkach.title === '' || newWorkach.title === undefined ||
+            newWorkach.institution === '' || newWorkach.institution === undefined ||
+            newWorkach.time === '' || newWorkach.time === undefined
+        ){
+            return res.status(500).send({ error: true, message: `Input cannot be empty!` })
+        } 
+        else {
+            // Set Data
+            let data = {}
+            if(
+                newWorkach.opt === '' || newWorkach.opt === undefined
+            ) {
+                data = {
+                    ...newWorkach,
+                    opt: '-',
+                    description: '["-"]'
+                }
+            } else {
+                // 
+                // configuring description array]
+
+                let DSC = newWorkach.description.sort((a, b) => (a.timestamp) - (b.timestamp));
+                DSC = DSC.concat({
+                    index:1000,
+                    value: 'last'
+                })
+
+                let description = []
+                for(var i=0; i<DSC.length-1; i++) {
+                    if( DSC[i].index < DSC[i+1].index ) {
+                        description.push(DSC[i])
+                    }
+                }
+                description = description.sort((a, b) => (a.index) - (b.index));
+                description = description.concat({
+                    index:1000,
+                    value: 'last'
+                })
+
+                let newDescription = []
+                for(var j=0; j<description.length-1; j++) {
+                    if( description[j].index < description[j+1].index ) {
+                        newDescription.push(description[j].value)
+                    }
+                }
+
+                newDescription = JSON.stringify(newDescription)
+
+                data = {
+                    ...newWorkach,
+                    description: newDescription
+                }
+            }
+
+            delete data.length
+
+            // Set SQL Syntax
+            // Add Workach SQL
+            let sql = `INSERT INTO workach SET ? `;
+
+            // Database Action
+            db.query(sql, data,(err, result) => {
+                if (err) return res.status(500).send(err);
+
+                if (result.insertId === 0) {
+                    return res
+                        .status(200)
+                        .send({ error: true, message: "Failed to add new workach!" })
+                } else {
+                    return res
+                        .status(200)
+                        .send({ error: false, message: "Add new workach successfull!" })
+                }
+            })
+        }
+    },
+
+    /**
+    * @routes POST
+    * @description Fetch workach for update
+    * @access Admin
+    */
+    fetchupdateworkach : (req,res) => {
+        // Get id
+        const { id } = req.body
+
+        // Set SQL Syntax
+        // Get Workach SQL
+        let sql = `select * from workach WHERE id = ?;`
+
+        // Database Action
+        db.query(sql, id, (err, result) => {
+            if(err) res.status(200).send(err)
+
+            if (result.length === 0) {
+                return res.status(200).send({ error: true, message: 'Data unavailable!' });
+            } else {
+                let resultSuccess = {
+                    ...result[0],
+                    description: JSON.parse(result[0].description)
+                }
+
+                return res.status(200).send({ error: false, result: resultSuccess });
+            }
+        })
+    },
+
+    /**
+    * @routes PUT
+    * @description Update workach
+    * @access Admin
+    */
+    updateworkach : (req,res) => {
+        // Get Updated Education
+        const { updatedWorkach } = req.body
+
+        // Validation Data
+        if(
+            updatedWorkach.title === '' || updatedWorkach.title === undefined ||
+            updatedWorkach.institution === '' || updatedWorkach.institution === undefined ||
+            updatedWorkach.time === '' || updatedWorkach.time === undefined
+        ){
+            return res.status(500).send({ error: true, message: `Input cannot be empty!` })
+        } else {
+        // Set Data
+        let data = {}
+        if(
+            updatedWorkach.opt === '' || updatedWorkach.opt === undefined || updatedWorkach.opt === null
+        ) {
+            data = {
+                ...updatedWorkach,
+                opt: '-',
+                description: '["-"]'
+            }
+        } else {
+            data = {
+                ...updatedWorkach,
+                description: JSON.stringify(updatedWorkach.description)
+            };
+        }
+
+        // Set SQL Syntax
+        // Update Overview SQL
+        const sql = `UPDATE workach SET ? WHERE (id = ?)`;
+
+        // Database Action
+        db.query(sql, [data, updatedWorkach.id], (err, updatedWorkachResult) => {
+            if (err) return res.status(500).send(err);
+            
+            if (updatedWorkachResult.affectedRows === 0) {
+                return res
+                    .status(200)
+                    .send({ error: true, message: "Failed to update workach!" })
+            } else {
+                return res
+                    .status(200)
+                    .send({ error: false, message: "Update workach successfull!" })
+            }
+        })
+        }
+    },
+
+    /**
+    * @routes POST
+    * @description Delete workach
+    * @access Admin
+    */
+    deleteworkach : (req,res) => {
+        // Get Id
+        const { id } = req.body;
+
+        // Set SQL Syntax
+        // Delete Comp-Skill SQL
+        let sql = `DELETE FROM workach WHERE (id = ? )`;
+
+        // Database Action
+        db.query(sql, parseInt(id), (err, result) => {
+            if (err) res.status(500).send({ error: true, err });
+
+            if (result.affectedRows === 0) {
+                return res.status(200).send({ error: true, message: 'Deletion unsuccessful!' });
+            } else {
+
+                // Set SQL Syntax
+                // Get Education SQL
+                sql = `select * from workach;`
 
                 // Database Action
                 db.query(sql, (err, result) => {
