@@ -20,7 +20,12 @@ import {
     fetchWorkach,
     rearrangeWorkachArray,
     clickUpdateWorkach,
-    openDeleteWorkach
+    openDeleteWorkach,
+    fetchOrgex,
+    rearrangeOrgexArray,
+    openAddOrgex,
+    clickUpdateOrgex,
+    openDeleteOrgex
 } from '../../redux'
 
 //
@@ -45,13 +50,14 @@ toast.configure({
 function MyPage() {
     
     //
-    // selector name and overview
+    // selector
     const name = useSelector( state => state.nameOverview.user )
     const overview = useSelector( state => state.nameOverview.overview )
     const compSkills = useSelector( state => state.skills.compSkills )
     const nonCompSkills = useSelector ( state => state.skills.nonCompSkills )
     const education = useSelector ( state => state.education.education_array )
     const workach = useSelector( state => state.workach.workach_array )
+    const orgex = useSelector( state => state.orgex.orgex_array )
 
     //
     // state name and overview
@@ -71,25 +77,50 @@ function MyPage() {
         dispatch(fetchNcs())
         dispatch(fetchEducation())
         dispatch(fetchWorkach())
+        dispatch(fetchOrgex())
     }, [dispatch]);
 
     return (
         <div className="row">
-
-            <div style={{marginTop:'3vh'}} className="container col s12 m4 l3"> 
+            
+            <div className="col s12 m4 l3" style={{marginTop:'3vh' ,position:'fixed'}}>
                 <div className="collection">
-                    <a href="#!" className="collection-item">Name and Overview</a>
-                    <a href="#!" className="collection-item">Skills</a>
-                    <a href="#!" className="collection-item">Education</a>
-                    <a href="#!" className="collection-item">Work and Achievement</a>
-                    <a href="#!" className="collection-item">Organizational</a>
+                    <a 
+                        href="#nameOverview"
+                        className="collection-item"
+                    >
+                        Name and Overview
+                    </a>
+                    <a 
+                        href="#skills"
+                        className="collection-item"
+                    >
+                        Skills
+                    </a>
+                    <a 
+                        href="#education"
+                        className="collection-item"
+                    >
+                        Education
+                    </a>
+                    <a 
+                        href="#workach"
+                        className="collection-item"
+                    >
+                        Work and Achievement</a>
+                    <a 
+                        href="#orgex"
+                        className="collection-item"
+                    >
+                        Organizational
+                    </a>
                 </div>
             </div>
 
-            <div className="col s12 m8 l9">
+            <div style={{marginLeft:'53vh'}}>
 
                 {/* name and overview starts */}
-                <table>
+                <table id="nameOverview">
                     <tbody>
                         <tr>
                             <td>
@@ -134,7 +165,7 @@ function MyPage() {
                 {/* name and overview ends */}
 
                 {/* skills starts */}
-                <table>
+                <table id="skills">
                     <tbody>
                         <tr>
                             <td>
@@ -210,7 +241,7 @@ function MyPage() {
                 {/* skills ends */}
 
                 {/* education starts */}
-                <table>
+                <table id="education">
                     <tbody>
                         <tr>
                             <td>
@@ -307,7 +338,7 @@ function MyPage() {
                 {/* education ends */}
 
                 {/* work and achievement starts */}
-                <table>
+                <table id="workach">
                     <tbody>
                         <tr>
                             <td>
@@ -398,8 +429,20 @@ function MyPage() {
                                                                                                 </table>
                                                                                             </td>
                                                                                             <td>
-                                                                                                <a href="#!" onClick={() => dispatch(clickUpdateWorkach(val.id))} className="button-margin waves-effect waves-light btn">Edit</a>
-                                                                                                <a href="#!" onClick={() => dispatch(openDeleteWorkach(val.workachId))} className="waves-effect waves-light btn">Delete</a>
+                                                                                                <a 
+                                                                                                    href="#!" 
+                                                                                                    onClick={() => dispatch(clickUpdateWorkach(val.id))} 
+                                                                                                    className="button-margin waves-effect waves-light btn"
+                                                                                                >
+                                                                                                    Edit
+                                                                                                </a>
+                                                                                                <a 
+                                                                                                    href="#!" 
+                                                                                                    onClick={() => dispatch(openDeleteWorkach(val.workachId))} 
+                                                                                                    className="waves-effect waves-light btn"
+                                                                                                >
+                                                                                                    Delete
+                                                                                                </a>
                                                                                             </td>
                                                                                         </tr>
                                                                                     )
@@ -435,7 +478,7 @@ function MyPage() {
                 {/* work and achievement ends */}
 
                 {/* organizational exp starts */}
-                <table>
+                <table id="orgex">
                     <tbody>
                         <tr>
                             <td>
@@ -444,51 +487,134 @@ function MyPage() {
                         </tr>
                         <tr className="no-border">
                             <td>
-                                <table className="highlight">
-                                    <thead>
-                                        <tr>
-                                            <td>Num.</td>
-                                            <td>Title</td>
-                                            <td>Institution</td>
-                                            <td>Time</td>
-                                            <td>Option</td>
-                                            <td>Description</td>
-                                            <td></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Staff of Pemuda Peduli Social Organization</td>
-                                            <td>Pemuda Peduli</td>
-                                            <td>2018 - 2019</td>
-                                            <td>Key Responsibilities Included</td>
-                                            <td>
-                                                <table className="highlight">
-                                                    <tbody>
-                                                        <tr className="no-border">
-                                                            <td>
-                                                                Research
-                                                            </td>
-                                                        </tr>
-                                                        <tr className="no-border">
-                                                            <td>
-                                                                Logistics
-                                                            </td>
-                                                        </tr>
+                                <DragDropContext
+                                    onDragEnd={
+                                        (result) => {
+                                            dispatch(rearrangeOrgexArray(result,orgex))
+                                        }
+                                    }
+                                >
+                                    <table className="highlight">
+                                        <thead>
+                                            <tr>
+                                                <td>Num.</td>
+                                                <td>Title</td>
+                                                <td>Institution</td>
+                                                <td>Time</td>
+                                                <td>Option</td>
+                                                <td>Description</td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <Droppable
+                                            droppableId="orgex"
+                                            key="orgex_droppable"
+                                        >
+                                            {
+                                                ( provided ) => (
+                                                    <tbody
+                                                        ref = {provided.innerRef}
+                                                        {...provided.droppableProps}
+                                                    >
+                                                        {
+                                                            orgex?
+                                                                <>
+                                                                    {
+                                                                        orgex.map((val,index) => {
+                                                                            return (
+                                                                                <Draggable
+                                                                                    draggableId={index.toString()}
+                                                                                    index={index}
+                                                                                    key={index}
+                                                                                >
+                                                                                    {
+                                                                                        ( drag_provided ) => (
+                                                                                            <tr 
+                                                                                                key={index}
+                                                                                                {...drag_provided.draggableProps}
+                                                                                                {...drag_provided.dragHandleProps}
+                                                                                                ref={drag_provided.innerRef}
+                                                                                                className="on-drag"
+                                                                                            >
+                                                                                                <td>{val.orgexId}</td>
+                                                                                                <td>{val.title}</td>
+                                                                                                <td>{val.institution}</td>
+                                                                                                <td>{val.time}</td>
+                                                                                                <td>{val.opt}</td>
+                                                                                                <td>
+                                                                                                    <table className="highlight">
+                                                                                                        <tbody>
+                                                                                                            {
+                                                                                                                orgex[index].description?
+                                                                                                                    orgex[index].description.map((val,index) => {
+                                                                                                                        return(
+                                                                                                                            <tr key={index} className="no-border">
+                                                                                                                                <td>
+                                                                                                                                    {val}
+                                                                                                                                </td>
+                                                                                                                            </tr>
+                                                                                                                        )
+                                                                                                                    })
+                                                                                                                :
+                                                                                                                    <tr className="no-border">
+                                                                                                                        <td>
+                                                                                                                            -
+                                                                                                                        </td>
+                                                                                                                    </tr>
+                                                                                                            }
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <a 
+                                                                                                        onClick={() => {dispatch(clickUpdateOrgex(val.id))}}
+                                                                                                        href="#!" 
+                                                                                                        className="button-margin waves-effect waves-light btn"
+                                                                                                    >
+                                                                                                        Edit
+                                                                                                    </a>
+                                                                                                    <a 
+                                                                                                        onClick={() => {dispatch(openDeleteOrgex(val.orgexId))}}
+                                                                                                        href="#!" 
+                                                                                                        className="waves-effect waves-light btn"
+                                                                                                    >
+                                                                                                        Delete
+                                                                                                    </a>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        )
+                                                                                    }
+                                                                                </Draggable>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                    {provided.placeholder}
+                                                                </>
+                                                            :
+                                                            <>
+                                                                <tr className="no-border">
+                                                                    <td className="center">
+                                                                        There is no data available yet
+                                                                    </td>
+                                                                </tr>
+                                                            </>
+                                                        }
                                                     </tbody>
-                                                </table>
-                                            </td>
-                                            <td>
-                                                <a href="#!" className="button-margin waves-effect waves-light btn">Edit</a>
-                                                <a href="#!" className="waves-effect waves-light btn">Delete</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div className="center mt-3">
-                                    <a href="#!" className="waves-effect waves-light btn">Add</a>
-                                </div>
+
+                                                )
+                                            }
+                                        </Droppable>
+                                    </table>
+                                    <div className="center mt-3">
+                                        <a 
+                                            onClick={() => {dispatch(openAddOrgex())}}
+                                            href="#!" 
+                                            className="waves-effect waves-light btn"
+                                        >
+                                            Add
+                                        </a>
+                                    </div>
+                                </DragDropContext>
                             </td>
                         </tr>
                     </tbody>

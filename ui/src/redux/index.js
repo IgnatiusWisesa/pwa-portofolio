@@ -31,12 +31,22 @@ export {
 } from './workach/workachActions'
 
 export {
+    fetchOrgex,
+    rearrangeOrgexArray,
+    addOrgex,
+    updateOrgex,
+    deleteOrgex
+} from './orgex/orgexActions'
+
+export {
+    // education
     openAddEducation,
     closeAddEducation,
     openUpdateEducation,
     closeUpdateEducation,
     openDeleteEducation,
     closeDeleteEducation,
+    // work-ach
     openAddWorkach,
     closeAddWorkach,
     selectOptionsWorkach,
@@ -48,5 +58,18 @@ export {
     addUpdateDescriptionWorkach,
     deleteUpdateDescriptionWorkach,
     openDeleteWorkach,
-    closeDeleteWorkach
+    closeDeleteWorkach,
+    // org-ex
+    openAddOrgex,
+    closeAddOrgex,
+    selectOptionsOrgex,
+    addOptionsOrgex,
+    deleteOptionsOrgex,
+    clickUpdateOrgex,
+    closeUpdateOrgex,
+    updateDescriptionOrgex,
+    addUpdateDescriptionOrgex,
+    deleteUpdateDescriptionOrgex,
+    openDeleteOrgex,
+    closeDeleteOrgex
 } from './modals/modalsActions'

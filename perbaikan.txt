@@ -1,0 +1,3 @@
+Perbaikan:
+- kalo kosong pas add kasitau input gaboleh kosong
+- ilangin default value

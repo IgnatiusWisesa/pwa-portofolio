@@ -23,7 +23,24 @@ import {
     ADD_UPDATE_DESCRIPTION_WORKACH,
     DELETE_UPDATE_DESCRIPTION_WORKACH,
     OPEN_DELETE_WORKACH,
-    CLOSE_DELETE_WORKACH
+    CLOSE_DELETE_WORKACH,
+    // 
+    // org-ex
+    OPEN_ADD_ORGEX,
+    CLOSE_ADD_ORGEX,
+    SELECT_OPTIONS_ORGEX,
+    DESELECT_OPTIONS_ORGEX,
+    ADD_OPTIONS_ORGEX,
+    DELETE_OPTIONS_ORGEX,
+    OPEN_UPDATE_ORGEX_REQUEST,
+    OPEN_UPDATE_ORGEX_SUCCESS,
+    OPEN_UPDATE_ORGEX_FAILED,
+    CLOSE_UPDATE_ORGEX,
+    UPDATE_DESCRIPTION_ORGEX,
+    ADD_UPDATE_DESCRIPTION_ORGEX,
+    DELETE_UPDATE_DESCRIPTION_ORGEX,
+    OPEN_DELETE_ORGEX,
+    CLOSE_DELETE_ORGEX
 } from "./modalsTypes"
 import Axios from "axios"
 import { apiUrlAdmin } from "../../helper/URL"
@@ -192,5 +209,132 @@ export const openDeleteWorkach = ( id ) => {
 export const closeDeleteWorkach = () => {
     return {
         type: CLOSE_DELETE_WORKACH
+    }
+}
+
+//
+// org-ex
+export const openAddOrgex = () => {
+    return {
+        type: OPEN_ADD_ORGEX
+    }
+}
+
+export const closeAddOrgex = () => {
+    return {
+        type: CLOSE_ADD_ORGEX
+    }
+}
+
+export const selectOptionsOrgex = ( options ) => {
+    if ( options ) {
+        return {
+            type: SELECT_OPTIONS_ORGEX,
+            payload: [1]
+        }
+    } else {
+        return {
+            type: DESELECT_OPTIONS_ORGEX
+        }
+    }
+}
+
+export const addOptionsOrgex = () => {
+    return {
+        type: ADD_OPTIONS_ORGEX
+    }
+}
+
+export const deleteOptionsOrgex = () => {
+    return {
+        type: DELETE_OPTIONS_ORGEX
+    }
+}
+
+const openUpdateOrgexRequest = () => {
+    return {
+        type: OPEN_UPDATE_ORGEX_REQUEST
+    }
+}
+
+const openUpdateOrgexSuccess = ( orgex_update_array ) => {
+    return {
+        type: OPEN_UPDATE_ORGEX_SUCCESS,
+        payload: orgex_update_array
+    }
+}
+
+const openUpdateOrgexFailed = ( message ) => {
+    return {
+        type: OPEN_UPDATE_ORGEX_FAILED,
+        payload: message
+    }
+}
+
+export const clickUpdateOrgex = ( id ) => {
+    return (
+        ( dispatch ) => {
+            dispatch(openUpdateOrgexRequest())
+            Axios.post(`${apiUrlAdmin}/get-orgex-update`, {id})
+            .then((res) => {
+                if (res.data.error) {
+                    dispatch(openUpdateOrgexFailed(res.data.message))
+                } else {
+                    dispatch(openUpdateOrgexSuccess(res.data.result))
+                }
+            }).catch((err) => {
+                dispatch(openUpdateOrgexFailed(err.message))
+            })
+        }
+    )
+}
+
+export const closeUpdateOrgex = () => {
+    return {
+        type: CLOSE_UPDATE_ORGEX,
+        payload: {}
+    }
+}
+
+export const updateDescriptionOrgex = ( val, index, updateDescriptionO ) => {
+    let newDescriptionO = [...updateDescriptionO]
+    newDescriptionO[index] = val
+
+    return {
+        type: UPDATE_DESCRIPTION_ORGEX,
+        payload: newDescriptionO
+    }
+}
+
+export const addUpdateDescriptionOrgex = ( updateDescriptionO ) => {
+    let newDescriptionO = [...updateDescriptionO]
+    newDescriptionO[updateDescriptionO.length] = null
+
+    return {
+        type: ADD_UPDATE_DESCRIPTION_ORGEX,
+        payload: newDescriptionO
+    }
+}
+
+export const deleteUpdateDescriptionOrgex = ( updateDescriptionO ) => {
+    let newDescriptionO = [...updateDescriptionO]
+    newDescriptionO.pop()
+
+    return {
+        type: DELETE_UPDATE_DESCRIPTION_ORGEX,
+        payload: newDescriptionO
+    }
+}
+
+export const openDeleteOrgex = ( id ) => {
+    return {
+        type: OPEN_DELETE_ORGEX,
+        payload: id
+    }
+}
+
+export const closeDeleteOrgex = () => {
+    return {
+        type: CLOSE_DELETE_ORGEX
     }
 }

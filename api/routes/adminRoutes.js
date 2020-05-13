@@ -149,4 +149,46 @@ router.put("/update-workach", adminControllers.updateworkach);
 */
 router.post("/delete-workach", adminControllers.deleteworkach);
 
+/**
+* @routes GET
+* @description Fetch orgex
+* @access Admin
+ */
+router.get("/get-orgex", adminControllers.fetchorgex);
+
+/**
+* @routes PUT
+* @description Rearrange orgex array 
+* @access Admin
+*/
+router.put("/rearrange-orgex", adminControllers.rearrangeorgex);
+
+/**
+* @routes POST
+* @description Add orgex 
+* @access Admin
+*/
+router.post("/add-orgex", adminControllers.addorgex);
+
+/**
+* @routes POST
+* @description Fetch orgex for update
+* @access Admin
+*/
+router.post("/get-orgex-update", adminControllers.fetchupdateorgex);
+
+/**
+* @routes PUT
+* @description Update orgex
+* @access Admin
+*/
+router.put("/update-orgex", adminControllers.updateorgex);
+
+/**
+* @routes POST
+* @description Delete orgex
+* @access Admin
+*/
+router.post("/delete-orgex", adminControllers.deleteorgex);
+
 module.exports = router;

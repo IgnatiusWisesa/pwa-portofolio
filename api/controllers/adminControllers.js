@@ -224,7 +224,7 @@ module.exports = {
     */
     fetchnoncompskills : (req,res) => {
         // Set SQL Syntax
-        // Get Computational Skills SQL
+        // Get Non-Computational Skills SQL
         let sql = `select * from noncomputational_skills;`
 
         // Database Action
@@ -260,7 +260,7 @@ module.exports = {
             };
             
             // Set SQL Syntax
-            // Add Comp-Skill SQL
+            // Add Non-Comp-Skill SQL
             let sql = `INSERT INTO noncomputational_skills SET ? `;
 
             // Database Action
@@ -290,7 +290,7 @@ module.exports = {
         const { id } = req.body;
 
         // Set SQL Syntax
-        // Delete Comp-Skill SQL
+        // Delete Non-Comp-Skill SQL
         let sql = `DELETE FROM noncomputational_skills WHERE (id = ? )`;
 
         // Database Action
@@ -459,14 +459,14 @@ module.exports = {
             }
 
             // Set SQL Syntax
-            // Update Overview SQL
+            // Update Education SQL
             const sql = `UPDATE education SET ? WHERE (id = ?)`;
     
             // Database Action
-            db.query(sql, [data, updatedEducation.id], (err, updateOverviewResult) => {
+            db.query(sql, [data, updatedEducation.id], (err, updateEducationResult) => {
                 if (err) return res.status(500).send(err);
                 
-                if (updateOverviewResult.affectedRows === 0) {
+                if (updateEducationResult.affectedRows === 0) {
                     return res
                         .status(200)
                         .send({ error: true, message: "Failed to update education!" })
@@ -489,7 +489,7 @@ module.exports = {
         const { id } = req.body;
 
         // Set SQL Syntax
-        // Delete Comp-Skill SQL
+        // Delete Education SQL
         let sql = `DELETE FROM education WHERE (educationId = ? )`;
 
         // Database Action
@@ -734,7 +734,7 @@ module.exports = {
         let sql = `select * from workach WHERE id = ?;`
 
         // Database Action
-        db.query(sql, id, (err, result) => {
+        db.query(sql, parseInt(id), (err, result) => {
             if(err) res.status(200).send(err)
 
             if (result.length === 0) {
@@ -785,7 +785,7 @@ module.exports = {
         }
 
         // Set SQL Syntax
-        // Update Overview SQL
+        // Update Workach SQL
         const sql = `UPDATE workach SET ? WHERE (id = ?)`;
 
         // Database Action
@@ -815,7 +815,7 @@ module.exports = {
         const { id } = req.body;
 
         // Set SQL Syntax
-        // Delete Comp-Skill SQL
+        // Delete Workach SQL
         let sql = `DELETE FROM workach WHERE (id = ? )`;
 
         // Database Action
@@ -829,6 +829,334 @@ module.exports = {
                 // Set SQL Syntax
                 // Get Education SQL
                 sql = `select * from workach;`
+
+                // Database Action
+                db.query(sql, (err, result) => {
+                    if(err) res.status(200).send(err)
+
+                    if (result.length === 0) {
+                        return res.status(200).send({ error: true, message: 'Data unavailable!' });
+                    } else {
+                        return res.status(200).send({ error: false, result });
+                    }
+                })
+            }
+        });
+    },
+
+    /**
+    * @routes GET
+    * @description Fetch orgex
+    * @access Admin
+    */
+    fetchorgex : (req,res) => {
+        // Set SQL Syntax
+        // Get Orgex SQL
+        let sql = `select * from orgex ORDER BY orgexId;`
+
+        // Database Action
+        db.query(sql, (err, result) => {
+            if(err) res.status(200).send(err)
+
+            if (result.length === 0) {
+                return res.status(200).send({ error: true, message: 'Data unavailable!' });
+            } else {
+                //
+                // Set Result
+                let resultSuccess = []
+
+                for (var i=0; i<result.length;i++) {
+                    resultSuccess.push(
+                        {
+                            id : result[i].id,
+                            orgexId : result[i].orgexId,
+                            title : result[i].title,
+                            institution : result[i].institution,
+                            time : result[i].time,
+                            opt : result[i].opt,
+                            description : JSON.parse(result[i].description)
+                        }
+                    )
+                }
+
+                return res.status(200).send({ error: false, resultSuccess });
+            }
+        })
+    },
+
+    /**
+    * @routes PUT
+    * @description Rearrange orgex array 
+    * @access Admin
+    */
+    rearrangeorgex : (req,res) => {
+        // Get orgex array
+        const {newOrgexArray} = req.body
+
+        //
+        // Stringify description
+        for (var i = 0; i<newOrgexArray.length; i++) {
+            
+            //
+            // Validify option
+            if (newOrgexArray[i].opt === false){
+                newOrgexArray[i] = {
+                    ...newOrgexArray[i],
+                    opt: '-'
+                }
+            }
+
+            //
+            // Validify description
+            if (newOrgexArray[i].description){
+                newOrgexArray[i] = {
+                    ...newOrgexArray[i],
+                    description: JSON.stringify(newOrgexArray[i].description)
+                }
+            } else {
+                newOrgexArray[i] = {
+                    ...newOrgexArray[i],
+                    description: '["-"]'
+                }
+            }
+        }
+
+        // Validation Data
+        if(
+            newOrgexArray === '' || newOrgexArray === undefined
+        ){
+            return res.status(500).send({ error: true, message: `There is an error with the dnd!` })
+        } else {
+            // Set SQL Syntax
+            // Rearrange Orgex SQL
+            let sql = ``;
+            for(var i=0; i<newOrgexArray.length; i++){
+                sql += `UPDATE orgex SET 
+                        title = '${newOrgexArray[i].title}', 
+                        institution = '${newOrgexArray[i].institution}', 
+                        time = '${newOrgexArray[i].time}', 
+                        opt = '${newOrgexArray[i].opt}',
+                        description = '${newOrgexArray[i].description}', 
+                        orgexId = '${i+1}'
+                        WHERE id = ${newOrgexArray[i].id};`
+            }
+
+            // Database Action
+            db.query(sql, (err, rearrangeWorkachResult) => {
+                if (err) return res.status(500).send(err);
+
+                if (rearrangeWorkachResult.affectedRows === 0) {
+                    return res
+                        .status(200)
+                        .send({ error: true, message: "Failed to rearrange workach!" })
+                } else {
+                    return res
+                        .status(200)
+                        .send({ error: false, message: "Rearrange workach successfull!" })
+                }
+            })
+        }
+    },
+
+    /**
+    * @routes POST
+    * @description Add orgex 
+    * @access Admin
+    */
+    addorgex : (req,res) => {
+        // Get new workach
+        const { newOrgex } = req.body
+
+        console.log(req.body)
+
+        // Validation Data
+        if(
+            newOrgex.title === '' || newOrgex.title === undefined ||
+            newOrgex.institution === '' || newOrgex.institution === undefined ||
+            newOrgex.time === '' || newOrgex.time === undefined
+        ){
+            return res.status(500).send({ error: true, message: `Input cannot be empty!` })
+        } 
+        else {
+            // Set Data
+            let data = {}
+            if(
+                newOrgex.opt === '' || newOrgex.opt === undefined
+            ) {
+                data = {
+                    ...newOrgex,
+                    opt: '-',
+                    description: '["-"]'
+                }
+            } else {
+                // 
+                // configuring description array]
+
+                let DSC = newOrgex.description.sort((a, b) => (a.timestamp) - (b.timestamp));
+                DSC = DSC.concat({
+                    index:1000,
+                    value: 'last'
+                })
+
+                let description = []
+                for(var i=0; i<DSC.length-1; i++) {
+                    if( DSC[i].index < DSC[i+1].index ) {
+                        description.push(DSC[i])
+                    }
+                }
+                description = description.sort((a, b) => (a.index) - (b.index));
+                description = description.concat({
+                    index:1000,
+                    value: 'last'
+                })
+
+                let newDescription = []
+                for(var j=0; j<description.length-1; j++) {
+                    if( description[j].index < description[j+1].index ) {
+                        newDescription.push(description[j].value)
+                    }
+                }
+
+                newDescription = JSON.stringify(newDescription)
+
+                data = {
+                    ...newOrgex,
+                    description: newDescription
+                }
+            }
+
+            delete data.length
+
+            // Set SQL Syntax
+            // Add Orgex SQL
+            let sql = `INSERT INTO orgex SET ? `;
+
+            // Database Action
+            db.query(sql, data,(err, result) => {
+                if (err) return res.status(500).send(err);
+
+                if (result.insertId === 0) {
+                    return res
+                        .status(200)
+                        .send({ error: true, message: "Failed to add new orgex!" })
+                } else {
+                    return res
+                        .status(200)
+                        .send({ error: false, message: "Add new orgex successfull!" })
+                }
+            })
+        }
+    },
+
+    /**
+    * @routes POST
+    * @description Fetch orgex for update
+    * @access Admin
+    */
+    fetchupdateorgex : (req,res) => {
+        // Get id
+        const { id } = req.body
+
+        // Set SQL Syntax
+        // Get Workach SQL
+        let sql = `select * from orgex WHERE id = ?;`
+
+        // Database Action
+        db.query(sql, parseInt(id), (err, result) => {
+            if(err) res.status(200).send(err)
+
+            if (result.length === 0) {
+                return res.status(200).send({ error: true, message: 'Data unavailable!' });
+            } else {
+                let resultSuccess = {
+                    ...result[0],
+                    description: JSON.parse(result[0].description)
+                }
+
+                return res.status(200).send({ error: false, result: resultSuccess });
+            }
+        })
+    },
+
+    /**
+    * @routes PUT
+    * @description Update orgex
+    * @access Admin
+    */
+    updateorgex : (req,res) => {
+        // Get Updated Orgex
+        const { updatedOrgex } = req.body
+
+        // Validation Data
+        if(
+            updatedOrgex.title === '' || updatedOrgex.title === undefined ||
+            updatedOrgex.institution === '' || updatedOrgex.institution === undefined ||
+            updatedOrgex.time === '' || updatedOrgex.time === undefined
+        ){
+            return res.status(500).send({ error: true, message: `Input cannot be empty!` })
+        } else {
+        // Set Data
+        let data = {}
+        if(
+            updatedOrgex.opt === '' || updatedOrgex.opt === undefined || updatedOrgex.opt === null
+        ) {
+            data = {
+                ...updatedOrgex,
+                opt: '-',
+                description: '["-"]'
+            }
+        } else {
+            data = {
+                ...updatedOrgex,
+                description: JSON.stringify(updatedOrgex.description)
+            };
+        }
+
+        // Set SQL Syntax
+        // Update Orgex SQL
+        const sql = `UPDATE orgex SET ? WHERE (id = ?)`;
+
+        // Database Action
+        db.query(sql, [data, updatedOrgex.id], (err, updatedWorkachResult) => {
+            if (err) return res.status(500).send(err);
+            
+            if (updatedWorkachResult.affectedRows === 0) {
+                return res
+                    .status(200)
+                    .send({ error: true, message: "Failed to update workach!" })
+            } else {
+                return res
+                    .status(200)
+                    .send({ error: false, message: "Update workach successfull!" })
+            }
+        })
+        }
+    },
+
+    /**
+    * @routes POST
+    * @description Delete orgex
+    * @access Admin
+    */
+    deleteorgex : (req,res) => {
+        // Get Id
+        const { id } = req.body;
+
+        // Set SQL Syntax
+        // Delete Orgex SQL
+        let sql = `DELETE FROM orgex WHERE (id = ? )`;
+
+        // Database Action
+        db.query(sql, parseInt(id), (err, result) => {
+            if (err) res.status(500).send({ error: true, err });
+
+            if (result.affectedRows === 0) {
+                return res.status(200).send({ error: true, message: 'Deletion unsuccessful!' });
+            } else {
+
+                // Set SQL Syntax
+                // Get Education SQL
+                sql = `select * from orgex;`
 
                 // Database Action
                 db.query(sql, (err, result) => {

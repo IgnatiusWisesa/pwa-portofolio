@@ -124,3 +124,9 @@ input[type="text"]:focus {
   color: rgb(39, 101, 218);
   cursor: pointer;
 }
+
+/* .sticky-sidenav {
+  position: fixed;
+  z-index: 1;
+  background: #eee;
+} */

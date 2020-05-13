@@ -1,67 +1,79 @@
 import {
-    FETCH_WORKACH_REQUEST,
-    FETCH_WORKACH_SUCCESS,
-    FETCH_WORKACH_FAILED,
-    ADD_WORKACH_REQUEST,
-    ADD_WORKACH_FAILED,
-    UPDATE_WORKACH_FAILED,
-    UPDATE_WORKACH_REQUEST,
-    DELETE_WORKACH_REQUEST,
-    DELETE_WORKACH_FAILED,
-} from './workachTypes'
+    FETCH_ORGEX_REQUEST,
+    FETCH_ORGEX_SUCCESS,
+    FETCH_ORGEX_FAILED,
+    REARRANGE_ORGEX_ARRAY_REQUEST,
+    REARRANGE_ORGEX_ARRAY_FAILED,
+    ADD_ORGEX_REQUEST,
+    ADD_ORGEX_FAILED,
+    UPDATE_ORGEX_REQUEST,
+    UPDATE_ORGEX_FAILED,
+    DELETE_ORGEX_REQUEST,
+    DELETE_ORGEX_FAILED
+} from './orgexTypes'
 
 const initialState = {
     loading: false,
-    workach_array: [],
+    orgex_array: [],
     message: ''
 }
 
-const workachReducers = ( state = initialState, action ) => {
+const orgexReducers = ( state = initialState, action ) => {
     switch(action.type) {
-        case FETCH_WORKACH_REQUEST:
+        case FETCH_ORGEX_REQUEST:
             return {
                 ...state,
                 loading: true
             }
-        case FETCH_WORKACH_SUCCESS:
+        case FETCH_ORGEX_SUCCESS:
             return {
                 ...state,
-                workach_array: action.payload
+                orgex_array: action.payload
             }
-        case FETCH_WORKACH_FAILED:
+        case FETCH_ORGEX_FAILED:
+            return {
+                ...state,
+                message: action.payload
+            }
+        case REARRANGE_ORGEX_ARRAY_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case REARRANGE_ORGEX_ARRAY_FAILED:
             return {
                 ...state,
                 message: action.payload,
                 loading: false
             }
-        case ADD_WORKACH_REQUEST:
+        case ADD_ORGEX_REQUEST:
             return {
                 ...state,
                 loading: true
             }
-        case ADD_WORKACH_FAILED:
+        case ADD_ORGEX_FAILED:
             return {
                 ...state,
                 message: action.payload,
                 loading: false
             }
-        case UPDATE_WORKACH_REQUEST:
+        case UPDATE_ORGEX_REQUEST:
             return {
                 ...state,
                 loading: true
             }
-        case UPDATE_WORKACH_FAILED:
+        case UPDATE_ORGEX_FAILED:
             return {
                 ...state,
                 message: action.payload,
                 loading: false
             }
-        case DELETE_WORKACH_REQUEST:
+        case DELETE_ORGEX_REQUEST:
             return {
                 ...state,
                 loading: true
             }
-        case DELETE_WORKACH_FAILED:
+        case DELETE_ORGEX_FAILED:
             return {
                 ...state,
                 message: action.payload,
@@ -72,4 +84,4 @@ const workachReducers = ( state = initialState, action ) => {
     }
 }
 
-export default workachReducers
+export default orgexReducers

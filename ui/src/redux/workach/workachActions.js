@@ -121,6 +121,8 @@ export const rearrangeWorkachArray = ( result, workach ) => {
         newWorkachArray[k] = {...newWorkachArray[k], workachId: k+1}
     }
 
+    console.log(newWorkachArray)
+
     return (
         ( dispatch ) => {
             dispatch(rearrangeWorkachArrayRequest())

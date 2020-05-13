@@ -19,7 +19,19 @@ import {
     deleteUpdateDescriptionWorkach,
     updateWorkach,
     closeDeleteWorkach,
-    deleteWorkach
+    deleteWorkach,
+    closeAddOrgex,
+    addOptionsOrgex,
+    deleteOptionsOrgex,
+    selectOptionsOrgex,
+    addOrgex,
+    closeUpdateOrgex,
+    addUpdateDescriptionOrgex,
+    updateDescriptionOrgex,
+    deleteUpdateDescriptionOrgex,
+    updateOrgex,
+    closeDeleteOrgex,
+    deleteOrgex
 } from '../../redux'
 
 //
@@ -36,11 +48,14 @@ toast.configure({
 function Modals() {
     //
     // selector
+    const modals = useSelector( state => state.modals )
     const education = useSelector( state => state.education.education_array )
     const workach = useSelector( state => state.workach.workach_array )
-    const modals = useSelector( state => state.modals )
     const workach_update_array = useSelector( state => state.modals.workach_update_array )
     const workach_update_description = useSelector( state => state.modals.workach_update_description )
+    const orgex = useSelector( state => state.orgex.orgex_array )
+    const orgex_update_array = useSelector( state => state.modals.orgex_update_array )
+    const orgex_update_description = useSelector( state => state.modals.orgex_update_description )
     const {
         add_education,
         update_education,
@@ -50,8 +65,15 @@ function Modals() {
         add_workach,
         select_options_workach,
         array_options_workach,
+        update_workach,
         delete_workach,
-        delete_workach_id
+        delete_workach_id,
+        add_orgex,
+        select_options_orgex,
+        array_options_orgex,
+        update_orgex,
+        delete_orgex,
+        delete_orgex_id
     } = modals
 
     //
@@ -86,7 +108,7 @@ function Modals() {
     // modal state
     const [isAddWorkachOpen = add_workach] = useState()
     let showAddWorkach = isAddWorkachOpen? 'show-modal' : 'hidden-modal'
-    const [isUpdateWorkachOpen = workach_update_array.length] = useState()
+    const [isUpdateWorkachOpen = update_workach] = useState()
     let showUpdateWorkach = isUpdateWorkachOpen? 'show-modal' : 'hidden-modal'
     const [isDeleteWorkachOpen = delete_workach] = useState()
     let showDeleteWorkach = isDeleteWorkachOpen? 'show-modal' : 'hidden-modal'
@@ -108,12 +130,50 @@ function Modals() {
             setUpdateDescription(workach_update_description)
         } else if(workach_update_array.length){
             setUpdateDescription(workach_update_array[0].description)
+        } else if(orgex_update_description.length){
+            setUpdateDescriptionO(orgex_update_description)
+        } else if(orgex_update_array.length){
+            setUpdateDescriptionO(orgex_update_array[0].description)
         } else {
             setUpdateDescription([])
+            setUpdateDescriptionO([])
         }
-    }, [workach_update_array, workach_update_description])
+    }, [
+            workach_update_array, 
+            workach_update_description,
+            orgex_update_array,
+            orgex_update_description
+        ]
+    )
     // delete state
     const delete_workach_obj = workach.filter((val) => delete_workach_id === val.workachId)[0]
+
+    // org-ex state
+    // modal state
+    const [isAddOrgexOpen = add_orgex] = useState()
+    let showAddOrgex = isAddOrgexOpen? 'show-modal' : 'hidden-modal'
+    const [isUpdateOrgexOpen = update_orgex] = useState()
+    let showUpdateOrgex = isUpdateOrgexOpen? 'show-modal' : 'hidden-modal'
+    const [isDeleteOrgexOpen = delete_orgex] = useState()
+    let showDeleteOrgex = isDeleteOrgexOpen? 'show-modal' : 'hidden-modal'
+    // add state
+    const [addTitleNo, setAddTitleNo] = useState()
+    const [addInstitutionNo, setAddInstitutionNo] = useState()
+    const [addTimeNo, setAddTimeNo] = useState()
+    const [addOptionsNo, setAddOptionsNo] = useState()
+    const [addFillOptionsNo, setAddFillOptionsNo] = useState([])
+    // update state
+    const [updateTitleO, setUpdateTitleO] = useState()
+    const [updateInstitutionO, setUpdateInstitutionO] = useState()
+    const [updateTimeO, setUpdateTimeO] = useState()
+    const [updateOptionsO, setUpdateOptionsO] = useState()
+    let [updateDescriptionO, setUpdateDescriptionO] = useState([])
+    // delete state
+    const delete_orgex_obj = orgex.filter((val) => delete_orgex_id === val.orgexId)[0]
+    
+    console.log(delete_orgex)
+    console.log(delete_orgex_id)
+    console.log(delete_orgex_obj)
 
     return (
         <div>
@@ -469,12 +529,22 @@ function Modals() {
 {/* ================================================================================================================ add workach modal ends */}
 {/* ================================================================================================================ update workach modal starts */}
             {
-                workach_update_array.length?
+                update_workach?
                     <div id="myModal" className={showUpdateWorkach}>
                         <div className="c-modal">
-                            <span onClick={()=>dispatch(closeUpdateWorkach())} className="modal-close">&times;</span>
+                            <span 
+                                onClick = {
+                                    ()=>dispatch(
+                                        closeUpdateWorkach(),
+                                        setUpdateOptionsW('')
+                                    )
+                                    } 
+                                className="modal-close"
+                            >
+                                &times;
+                            </span>
                             <div>
-                                <h4 className="center">Update Workach</h4>
+                                <h4 className="center">Update Work and Achievement</h4>
                                 <h5>ID: {workach_update_array[0].id}</h5>
                                 <table className="highlight">
                                     <thead>
@@ -542,7 +612,6 @@ function Modals() {
                                                                 setUpdateOptionsW(e.target.value)
                                                             }
                                                         }
-                                                        value= {updateOptionsW}
                                                         defaultValue= {workach_update_array[0].opt}
                                                         className="browser-default validate"
                                                     >
@@ -717,6 +786,455 @@ function Modals() {
                 null
             }
 {/* ================================================================================================================ delete workach modal ends */}
+{/* ================================================================================================================ add orgex modal starts */}
+            {
+                add_orgex?
+                    <div id="myModal" className={showAddOrgex}>
+                        <div className="c-modal">
+                            <span 
+                                onClick={() => {dispatch(closeAddOrgex())}}
+                                className="modal-close"
+                            >
+                                &times;
+                            </span>
+                            <div>
+                                <h4 className="center">Add Organizational Experiences</h4>
+                                <table className="highlight">
+                                    <thead>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input 
+                                                        onChange={(e) => setAddTitleNo(e.target.value)}
+                                                        id="title" 
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="title">Title</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input 
+                                                        onChange={(e) => setAddInstitutionNo(e.target.value)}
+                                                        id="institution" 
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="institution">Institution</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input 
+                                                        onChange={(e) => setAddTimeNo(e.target.value)}
+                                                        id="time" 
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="time">Time</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <label htmlFor="browser-default">Options</label>
+                                                <div className="input-field col s12">
+                                                    <select 
+                                                        onChange={
+                                                            (e) => dispatch(selectOptionsOrgex(e.target.value),
+                                                            setAddOptionsNo(e.target.value)
+                                                            )
+                                                        }
+                                                        defaultValue=""
+                                                        className="browser-default validate"
+                                                    >
+                                                        <option value="" disabled>Choose your option</option>
+                                                        <option value="Skills Included">Skills Included</option>
+                                                        <option value="Key Responsibilities Included">Key Responsibilities Included</option>
+                                                        <option value="Description">Description</option>
+                                                        <option value="">None</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {
+                                            select_options_orgex?
+                                                array_options_orgex.map((val,index) => {
+                                                    return(
+                                                        <tr className="no-border" key={index}>
+                                                            <td>
+                                                                <div className="inputWithIcon inputIconBg row">
+                                                                    <div className="col s12">
+                                                                        <textarea
+                                                                            onChange={
+                                                                                (e) => setAddFillOptionsNo(
+                                                                                    addFillOptionsNo.concat(
+                                                                                        {
+                                                                                            index,
+                                                                                            timestamp: Date.now(),
+                                                                                            value: e.target.value
+                                                                                        }
+                                                                                    )
+                                                                                )
+                                                                            }
+                                                                            placeholder={addOptionsNo.split(' ')[0] + ' '+ parseInt(index+1)} 
+                                                                            className="materialize-textarea"
+                                                                        >
+                                                                        </textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            :
+                                            null
+                                        }
+                                        {
+                                            select_options_orgex?
+                                                <tr className="no-border">
+                                                    <td>
+                                                        <div className="row mb-3">
+                                                            <div className="col s5"></div>
+                                                            <div
+                                                                onClick={
+                                                                    ()=>dispatch(addOptionsOrgex())}
+                                                                className="col s1 color-add-icon"
+                                                            >
+                                                                <i className="fas fa-plus-circle fa-2x" />
+                                                            </div>
+                                                            <div 
+                                                                onClick={()=>dispatch(deleteOptionsOrgex())}
+                                                                className="col s6 delete-modal-icon"
+                                                            >
+                                                                <i className="fa fa-minus-circle fa-2x" aria-hidden="true" />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            :
+                                            null
+                                        }
+                                        <tr className="no-border">
+                                            <td className="center">
+                                                {
+                                                    orgex?
+                                                        <a onClick={
+                                                            () => {
+                                                                dispatch(addOrgex(
+                                                                    {
+                                                                        newOrgex: {
+                                                                            title: addTitleNo || '',
+                                                                            institution: addInstitutionNo || '',
+                                                                            time: addTimeNo || '',
+                                                                            opt: addOptionsNo || '',
+                                                                            description: addFillOptionsNo || '',
+                                                                            length: Math.max(...addFillOptionsNo.map((val) => val.index))+1,
+                                                                            orgexId: orgex.length + 1
+                                                                        }
+                                                                    }
+                                                                ))
+                                                            }
+                                                        } href="#!" className="ml-2 button-margin waves-effect waves-light btn">
+                                                            Save
+                                                        </a>
+                                                    :
+                                                        <a onClick={
+                                                            () => {
+                                                                dispatch(addOrgex(
+                                                                    {
+                                                                        newOrgex: {
+                                                                            title: addTitleNo || '',
+                                                                            institution: addInstitutionNo || '',
+                                                                            time: addTimeNo || '',
+                                                                            opt: addOptionsNo || '',
+                                                                            description: addFillOptionsNo || '',
+                                                                            length: Math.max(...addFillOptionsNo.map((val) => val.index))+1,
+                                                                            orgexId: 1
+                                                                        }
+                                                                    }
+                                                                ))
+                                                            }
+                                                        } href="#!" className="ml-2 button-margin waves-effect waves-light btn">
+                                                            Save
+                                                        </a>
+                                                }
+                                                
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                :
+                null
+            }
+{/* ================================================================================================================ add orgex modal ends */}
+{/* ================================================================================================================ update orgex modal starts */}
+            {
+                update_orgex?
+                    <div id="myModal" className={showUpdateOrgex}>
+                        <div className="c-modal">
+                            <span 
+                                onClick = {
+                                    ()=>dispatch(
+                                        closeUpdateOrgex(),
+                                        setUpdateOptionsO('')
+                                    )
+                                } 
+                                className="modal-close"
+                            >
+                                &times;
+                            </span>
+                            <div>
+                                <h4 className="center">Update Organizational Experiences</h4>
+                                <h5>ID: {orgex_update_array[0].id}</h5>
+                                <table className="highlight">
+                                    <thead>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input
+                                                        id="title"
+                                                        onChange={
+                                                            (e) => {
+                                                                setUpdateTitleO(e.target.value)
+                                                            }
+                                                        }
+                                                        defaultValue={orgex_update_array[0].title}
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="title">Title</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input
+                                                        id="institution"
+                                                        onChange={
+                                                            (e) => {
+                                                                setUpdateInstitutionO(e.target.value)
+                                                            }
+                                                        }
+                                                        defaultValue={orgex_update_array[0].institution}
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="institution">Institution</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="input-field">
+                                                    <input
+                                                        id="time"
+                                                        onChange={
+                                                            (e) => {
+                                                                setUpdateTimeO(e.target.value)
+                                                            }
+                                                        }
+                                                        defaultValue={orgex_update_array[0].time}
+                                                        className="center validate" 
+                                                        type="text" 
+                                                    />
+                                                    <label htmlFor="time">Time</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td>
+                                                <label htmlFor="browser-default">Options</label>
+                                                <div className="input-field col s12">
+                                                    <select
+                                                        onChange= {
+                                                            (e) => {
+                                                                setUpdateOptionsO(e.target.value)
+                                                            }
+                                                        }
+                                                        defaultValue= {orgex_update_array[0].opt}
+                                                        className="browser-default validate"
+                                                    >
+                                                        <option value="Skills Included">Skills Included</option>
+                                                        <option value="Key Responsibilities Included">Key Responsibilities Included</option>
+                                                        <option value="Description">Description</option>
+                                                        <option value="-">None</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {   
+                                            updateOptionsO !== '-' ?
+                                                updateDescriptionO.map((val,index) => {
+                                                    if (updateOptionsW === undefined || updateOptionsW === null) {
+                                                        return (
+                                                            <tr className="no-border" key={index}>
+                                                                <td>
+                                                                    <div className="inputWithIcon inputIconBg row">
+                                                                        <div className="col s12">
+                                                                            <textarea
+                                                                                onChange={(e) => {
+                                                                                    dispatch(updateDescriptionOrgex(
+                                                                                        e.target.value, index, updateDescriptionO
+                                                                                    ))
+                                                                                }}
+                                                                                defaultValue={val}
+                                                                                placeholder={
+                                                                                    orgex_update_array[0].opt.split(' ')[0] + ' '+ parseInt(index+1)
+                                                                                }
+                                                                                className="materialize-textarea"
+                                                                            >
+                                                                            </textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    } 
+                                                    else {
+                                                        return (
+                                                            <tr className="no-border" key={index}>
+                                                                <td>
+                                                                    <div className="inputWithIcon inputIconBg row">
+                                                                        <div className="col s12">
+                                                                            <textarea
+                                                                                onChange={(e) => {
+                                                                                    dispatch(updateDescriptionOrgex(
+                                                                                        e.target.value, index, updateDescriptionO
+                                                                                    ))
+                                                                                }}
+                                                                                defaultValue={val}
+                                                                                placeholder={
+                                                                                    updateOptionsO.split(' ')[0] + ' '+ parseInt(index+1)
+                                                                                }
+                                                                                className="materialize-textarea"
+                                                                            >
+                                                                            </textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                })
+                                            : 
+                                            null
+                                        }
+                                        <tr className="no-border">
+                                            <td>
+                                                <div className="row mb-3">
+                                                    <div className="col s5"></div>
+                                                    <div
+                                                        onClick={() => {
+                                                            dispatch(addUpdateDescriptionOrgex( updateDescriptionO ))
+                                                        }}
+                                                        className="col s1 color-add-icon"
+                                                    >
+                                                        <i className="fas fa-plus-circle fa-2x" />
+                                                    </div>
+                                                    <div 
+                                                        onClick={() => {
+                                                            dispatch(deleteUpdateDescriptionOrgex( updateDescriptionO ))
+                                                        }}
+                                                        className="col s6 delete-modal-icon"
+                                                    >
+                                                        <i className="fa fa-minus-circle fa-2x" aria-hidden="true" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="no-border">
+                                            <td className="center">
+                                                <a 
+                                                    onClick={
+                                                        () => {
+                                                            dispatch(updateOrgex({
+                                                                updatedOrgex: {
+                                                                    id: orgex_update_array[0].id,
+                                                                    workachId: orgex_update_array[0].workachId,
+                                                                    title: updateTitleO || orgex_update_array[0].title,
+                                                                    institution: updateInstitutionO || orgex_update_array[0].institution,
+                                                                    time: updateTimeO || orgex_update_array[0].time,
+                                                                    opt: updateOptionsO || orgex_update_array[0].opt,
+                                                                    description: updateDescriptionO || orgex_update_array[0].description
+                                                                }
+                                                            }))
+                                                        }
+                                                    }
+                                                    href="#!" 
+                                                    className="ml-2 button-margin waves-effect waves-light btn"
+                                                >Update</a>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                :
+                    null
+            }
+{/* ================================================================================================================ update orgex modal ends */}
+{/* ================================================================================================================ delete orgex modal starts */}
+            {
+                delete_orgex?
+                    <div id="myModal" className={showDeleteOrgex}>
+                        <div className="c-modal">
+                            <span onClick={()=>dispatch(closeDeleteOrgex())} className="modal-close">&times;</span>
+                            <div>
+                                <h5>Are you sure want to delete this?</h5>
+                                <table className="highlight">
+                                    <thead>
+                                        <tr>
+                                            <td>Title</td>
+                                            <td>Institution</td>
+                                            <td>Time</td>
+                                            <td>Option</td>
+                                            <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{delete_orgex_obj.title}</td>
+                                            <td>{delete_orgex_obj.institution}</td>
+                                            <td>{delete_orgex_obj.time}</td>
+                                            <td>{delete_orgex_obj.opt}</td>
+                                            <td>
+                                                <table>
+                                                    <tbody>
+                                                        {delete_orgex_obj.description.map((val, index) => {
+                                                            return (
+                                                                <tr key={index} className="no-border">
+                                                                    <td>{val}</td>
+                                                                </tr>
+                                                            )
+                                                        })}
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div className="mt-3">
+                                    <a href="#!" onClick={() => dispatch(deleteOrgex(delete_orgex_obj.orgexId))} className="button-margin waves-effect waves-light btn">Delete</a>
+                                    <a href="#!" onClick={() => dispatch(closeDeleteOrgex())} className="waves-effect waves-light btn">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                :
+                null
+            }
+{/* ================================================================================================================ delete orgex modal ends */}
         </div>
     )
 }
