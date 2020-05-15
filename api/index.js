@@ -14,9 +14,13 @@ app.use(cors())
 app.use(bodyParser.json())
 
 // Set routes
-const { adminRoutes } = require('./routes');
+const {
+	adminRoutes,
+	authRoutes
+} = require('./routes');
 app.get('/', (req, res) => res.status(200).send('Server pwa-portofolio is running...'));
 app.use('/admin', adminRoutes);
+app.use('/auth', authRoutes);
 
 // Parse application / x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended:false }))

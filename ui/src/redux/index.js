@@ -73,3 +73,7 @@ export {
     openDeleteOrgex,
     closeDeleteOrgex
 } from './modals/modalsActions'
+
+export {
+    adminLogin
+} from './auth-admin/authAdminActions'

@@ -5,6 +5,7 @@ import educationReducers from './education/educationReducers'
 import modalsReducers from './modals/modalsReducers'
 import workachReducers from './workach/workachReducers'
 import orgexReducers from './orgex/orgexReducers'
+import authAdminReducers from './auth-admin/authAdminReducers'
 
 const rootReducer = combineReducers({
     nameOverview: nameOverviewReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     education: educationReducers,
     modals: modalsReducers,
     workach: workachReducers,
-    orgex: orgexReducers
+    orgex: orgexReducers,
+    authAdmin: authAdminReducers
 })
 
 export default rootReducer
