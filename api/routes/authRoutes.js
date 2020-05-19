@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { authControllers } = require('../controllers');
+const { verifyToken } = require('./../helper/tokens')
 
 /**
  * @routes POST
@@ -15,5 +16,12 @@ router.post('/admin-register', authControllers.adminRegister)
  * @access Admin
  */
 router.post('/admin-login', authControllers.adminLogin)
+
+/**
+ * @routes POST
+ * @description Verify admin access
+ * @access Admin
+ */
+router.post('/admin-verify', verifyToken, authControllers.adminVerify)
 
 module.exports = router

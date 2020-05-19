@@ -75,5 +75,6 @@ export {
 } from './modals/modalsActions'
 
 export {
+    adminVerify,
     adminLogin
 } from './auth-admin/authAdminActions'

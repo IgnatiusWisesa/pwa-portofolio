@@ -1,9 +1,12 @@
 // Import Database
 const db = require('./../database/db')
 // Import Crypto
-const CryptoJS = require('crypto-js')
 const encryptC = require('./../helper/encryptC')
 const decryptC = require('./../helper/decryptC')
+// Import JWT
+const jwt = require('jsonwebtoken');
+// DOTENV config
+require('dotenv').config();
 
 module.exports = {
 
@@ -60,7 +63,6 @@ module.exports = {
 	adminLogin: (req, res) => {
 		// Get Email And Password
 		const { adminUsername, adminPassword } = req.body;
-		console.log(req.body)
 
 		// Set SQL Syntax
 		const sqlFetch =
@@ -85,15 +87,47 @@ module.exports = {
 				for(var j=0; j<decResult.length; j++){
 					if(decResult[j].adminUsername === adminUsername){
 						if(decResult[j].adminPassword === adminPassword){
-							return res.status(200).send({ error: false, result: decResult[j] });
+
+							// set admin user
+							const admin = {
+								...decResult[j],
+								id: j+1
+							}
+
+							// make token with jwt
+							let accessToken = jwt.sign({admin}, process.env.tokenPass, { expiresIn: '3d' })
+
+							// send token to front-end
+							return res.status(200).send({
+								error: false,
+								result: accessToken
+							});
 						} else {
-							return res.status(200).send({ error: true, result: 'wrong password' });
+							return res.status(200).send({ error: true, message: 'wrong password' });
 						}
 					}
 				}
-
 				return res.status(200).send({ error: true, message: 'username not registered' });
 			}
 		})
 	},
+
+	/**
+	 * @routes POST
+	 * @description Verify admin access
+	 * @access Admin
+	 */
+	adminVerify: (req, res) => {
+		jwt.verify(req.token, process.env.tokenPass, (err, authData) => {
+			if(err) {
+			  return res.status(200).send({ error: true, message: 'wrong token!' });
+			} else {
+			  res.json({
+				message: 'Admin authorized!',
+				authData
+			  });
+			}
+		  });
+		
+	}
 }

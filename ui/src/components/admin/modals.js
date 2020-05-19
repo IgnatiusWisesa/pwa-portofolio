@@ -170,10 +170,6 @@ function Modals() {
     let [updateDescriptionO, setUpdateDescriptionO] = useState([])
     // delete state
     const delete_orgex_obj = orgex.filter((val) => delete_orgex_id === val.orgexId)[0]
-    
-    console.log(delete_orgex)
-    console.log(delete_orgex_id)
-    console.log(delete_orgex_obj)
 
     return (
         <div>

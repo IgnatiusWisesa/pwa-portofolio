@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './loginPage.css'
 import backgroundImg from './../../images/admin/backgroundLogin.jpg'
 import { useDispatch, useSelector } from 'react-redux'
-import { adminLogin } from '../../redux'
+import { adminLogin, adminVerify } from '../../redux'
 
 function LoginPage() {
     //
@@ -48,6 +48,17 @@ function LoginPage() {
                             adminUsername: username,
                             adminPassword: password
                         }))
+                    }}
+                    type="submit" 
+                    // defaultValue="Submit" 
+                />
+                <input 
+                    onClick={(e) => {
+                        e.preventDefault()
+                        console.log(localStorage.getItem("pwa_portfolio"))
+                        dispatch(adminVerify(
+                            localStorage.getItem("pwa_portfolio")
+                        ))
                     }}
                     type="submit" 
                     // defaultValue="Submit" 
