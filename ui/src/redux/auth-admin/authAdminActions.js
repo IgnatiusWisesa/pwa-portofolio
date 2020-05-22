@@ -3,7 +3,8 @@ import {
     ADMIN_LOGIN_SUCCESS,
     ADMIN_LOGIN_FAILED,
     ADMIN_VERIFY_FAILED,
-    ADMIN_VERIFY_REQUEST
+    ADMIN_VERIFY_REQUEST,
+    ADMIN_LOGOUT
 } from './authAdminTypes'
 import Axios from 'axios'
 import { apiUrlAuth } from '../../helper/URL'
@@ -22,8 +23,6 @@ const adminVerifyFailed = ( message ) => {
 }
 
 export const adminVerify = ( token ) => {
-    console.log('masuk admin verify')
-    console.log(token)
     return (
         ( dispatch ) => {
             dispatch(adminVerifyRequest())
@@ -66,7 +65,6 @@ const adminLoginFailed = ( message ) => {
 }
 
 export const adminLogin = ( data ) => {
-    console.log('masuk auth login')
     return (
         ( dispatch ) => {
             dispatch(adminLoginRequest())
@@ -92,4 +90,12 @@ export const adminLogin = ( data ) => {
             })
         } 
     )
+}
+
+export const adminLogout = () => {
+    localStorage.clear()
+    return {
+        type: ADMIN_LOGOUT,
+        message: 'wrong token!'
+    }
 }

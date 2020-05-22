@@ -95,7 +95,7 @@ module.exports = {
 							}
 
 							// make token with jwt
-							let accessToken = jwt.sign({admin}, process.env.tokenPass, { expiresIn: '3d' })
+							let accessToken = jwt.sign({admin}, process.env.tokenPass, { expiresIn: '10h' })
 
 							// send token to front-end
 							return res.status(200).send({

@@ -1,31 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+// import react-router-dom
+import { Redirect } from 'react-router-dom'
 import {
+    // name & overview
     fetchName,
     fetchOverview,
     updateName,
     updateOverview,
+    // comp skills
     fetchCs,
     postCs,
     deleteCs,
+    // non-comp skills
     fetchNcs,
     postNcs,
     deleteNcs,
+    // education
     fetchEducation,
     rearrangeEducationArray,
     openAddEducation,
     openUpdateEducation,
     openDeleteEducation,
+    // workach
     openAddWorkach,
     fetchWorkach,
     rearrangeWorkachArray,
     clickUpdateWorkach,
     openDeleteWorkach,
+    // orgex
     fetchOrgex,
     rearrangeOrgexArray,
     openAddOrgex,
     clickUpdateOrgex,
-    openDeleteOrgex
+    openDeleteOrgex,
+    // verify token
+    adminVerify
 } from '../../redux'
 
 //
@@ -58,6 +68,8 @@ function MyPage() {
     const education = useSelector ( state => state.education.education_array )
     const workach = useSelector( state => state.workach.workach_array )
     const orgex = useSelector( state => state.orgex.orgex_array )
+    // token
+    const authAdmin = useSelector( state => state.authAdmin )
 
     //
     // state name and overview
@@ -78,7 +90,18 @@ function MyPage() {
         dispatch(fetchEducation())
         dispatch(fetchWorkach())
         dispatch(fetchOrgex())
+
+        //
+        // check token
+        let token = localStorage.getItem("pwa_portfolio")
+        dispatch(adminVerify(token))
     }, [dispatch]);
+
+    if(authAdmin.message !== "Admin authorized!"){
+        return (
+            <Redirect from="/myPage" to="/login" />
+        )
+    }
 
     return (
         <div className="row">

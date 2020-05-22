@@ -3,7 +3,8 @@ import {
     ADMIN_LOGIN_SUCCESS,
     ADMIN_LOGIN_FAILED,
     ADMIN_VERIFY_REQUEST,
-    ADMIN_VERIFY_FAILED
+    ADMIN_VERIFY_FAILED,
+    ADMIN_LOGOUT
 } from './authAdminTypes'
 
 const initialState = {
@@ -39,7 +40,13 @@ const authAdminReducers = ( state = initialState, action ) => {
                 message: action.message
             }
         case ADMIN_LOGIN_FAILED:
-            console.log('ini login failed')
+            return {
+                ...state,
+                loading: false,
+                message: action.payload,
+                accessToken: ''
+            }
+        case ADMIN_LOGOUT:
             return {
                 ...state,
                 loading: false,

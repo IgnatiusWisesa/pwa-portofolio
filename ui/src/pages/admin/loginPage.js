@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './loginPage.css'
+import { Redirect } from 'react-router-dom'
 import backgroundImg from './../../images/admin/backgroundLogin.jpg'
 import { useDispatch, useSelector } from 'react-redux'
 import { adminLogin, adminVerify } from '../../redux'
@@ -15,9 +16,23 @@ function LoginPage() {
     const dispatch = useDispatch()
 
     //
+    // use effect
+    useEffect(() => {
+        let token = localStorage.getItem("pwa_portfolio")
+        console.log(token)
+        dispatch(adminVerify(token))
+    }, [dispatch])
+
+    //
     // selector
     const authAdmin = useSelector( state => state.authAdmin )
     console.log(authAdmin)
+
+    if(authAdmin.message === "Admin authorized!" && authAdmin.accessToken ){
+        return(
+            <Redirect from="/login" to="/myPage" />
+        )
+    }
 
     return (
         <div id="background">
@@ -48,17 +63,6 @@ function LoginPage() {
                             adminUsername: username,
                             adminPassword: password
                         }))
-                    }}
-                    type="submit" 
-                    // defaultValue="Submit" 
-                />
-                <input 
-                    onClick={(e) => {
-                        e.preventDefault()
-                        console.log(localStorage.getItem("pwa_portfolio"))
-                        dispatch(adminVerify(
-                            localStorage.getItem("pwa_portfolio")
-                        ))
                     }}
                     type="submit" 
                     // defaultValue="Submit" 

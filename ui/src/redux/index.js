@@ -76,5 +76,6 @@ export {
 
 export {
     adminVerify,
-    adminLogin
+    adminLogin,
+    adminLogout
 } from './auth-admin/authAdminActions'
