@@ -30,7 +30,7 @@ function LoginPage() {
 
     if(authAdmin.message === "Admin authorized!" && authAdmin.accessToken ){
         return(
-            <Redirect from="/login" to="/myPage" />
+            <Redirect from="/admin/login" to="/admin/myPage" />
         )
     }
 
