@@ -1,7 +1,7 @@
 import React from 'react'
 import { adminLogout } from '../../redux'
 import { useDispatch } from 'react-redux'
-
+import { Link } from 'react-router-dom'
 
 function AdminNav() {
     //
@@ -14,19 +14,19 @@ function AdminNav() {
                 <div className="center brand-logo">My Page</div>
                 <ul id="nav-mobile" className="right hide-on-med-and-down">
                     <li>
-                        <a href="#profile">
-                            <i className="fa fa-book fa-fw" aria-hidden="true" /> Profile
-                        </a>
+                        <Link to="/admin/myPage">
+                                <i className="fa fa-book fa-fw" aria-hidden="true" /> Profile
+                        </Link>
                     </li>
                     <li>
-                        <a href="#projects">
-                            <i className="fa fa-book fa-fw" aria-hidden="true" /> Projects
-                        </a>
+                        <Link to="/admin/projects">
+                                <i className="fa fa-book fa-fw" aria-hidden="true" /> Projects
+                        </Link>
                     </li>
                     <li>
-                        <a href="#settings">
-                            <i className="fa fa-cog fa-fw" aria-hidden="true"/> Settings
-                        </a>
+                        <Link to="/admin/myPage">
+                                <i className="fa fa-cog fa-fw" aria-hidden="true"/> Settings
+                        </Link>
                     </li>
                 </ul>
                 <ul id="nav-mobile" className="left hide-on-med-and-down">

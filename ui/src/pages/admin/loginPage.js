@@ -19,14 +19,12 @@ function LoginPage() {
     // use effect
     useEffect(() => {
         let token = localStorage.getItem("pwa_portfolio")
-        console.log(token)
         dispatch(adminVerify(token))
     }, [dispatch])
 
     //
     // selector
     const authAdmin = useSelector( state => state.authAdmin )
-    console.log(authAdmin)
 
     if(authAdmin.message === "Admin authorized!" && authAdmin.accessToken ){
         return(

@@ -32,7 +32,6 @@ export const adminVerify = ( token ) => {
                 }
             })
             .then((res) => {
-                console.log(res.data)
                 let message = res.data.message
                 dispatch(adminLoginSuccess(message, token))
             }).catch((err) => {
